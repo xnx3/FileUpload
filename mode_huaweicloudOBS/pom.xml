@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.file</groupId>
-	<artifactId>core</artifactId>
+	<artifactId>mode.huaweicloudOBS</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-core</name>
+	<name>file-mode-huaweicloudOBS</name>
 	<description>java file util</description>
 	<url>https://github.com/xnx3/FileUtil</url>
 
@@ -98,15 +98,33 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>  -->
+			</plugin> -->
 		</plugins>
 	</build>
 	
 	<dependencies>  
 		<dependency> 
-			<groupId>com.xnx3.util</groupId>
-			<artifactId>xnx3-util</artifactId>
-			<version>1.10</version>
+			<groupId>cn.zvo.file</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+			
+	  	<!-- 华为云依赖 -->
+		<dependency>
+			<groupId>com.huaweicloud</groupId>
+			<artifactId>esdk-obs-java</artifactId>
+			<version>3.19.5</version>
+			<exclusions>
+			        <exclusion>
+			            <groupId>org.apache.logging.log4j</groupId>
+						<artifactId>log4j-core</artifactId>
+			       </exclusion>
+			       <exclusion>
+			            <groupId>org.apache.logging.log4j</groupId>
+						<artifactId>log4j-api</artifactId>
+			       </exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	

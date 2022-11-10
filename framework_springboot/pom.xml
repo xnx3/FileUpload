@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.file</groupId>
-	<artifactId>core</artifactId>
+	<artifactId>framework.springboot</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-core</name>
+	<name>file-framework-springboot</name>
 	<description>java file util</description>
 	<url>https://github.com/xnx3/FileUtil</url>
 
@@ -86,7 +86,7 @@
 			</plugin>
 			
 			<!-- GPG -->
-			<!-- <plugin>
+			<!--  <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -104,9 +104,18 @@
 	
 	<dependencies>  
 		<dependency> 
-			<groupId>com.xnx3.util</groupId>
-			<artifactId>xnx3-util</artifactId>
-			<version>1.10</version>
+			<groupId>cn.zvo.file</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- springboot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.6.1</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	

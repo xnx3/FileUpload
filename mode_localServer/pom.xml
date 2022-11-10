@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.file</groupId>
-	<artifactId>mode.huaweicloudOBS</artifactId>
+	<artifactId>mode.localServer</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-mode-huaweicloudOBS</name>
+	<name>file-mode-localServer</name>
 	<description>java file util</description>
 	<url>https://github.com/xnx3/FileUtil</url>
 
@@ -86,7 +86,7 @@
 			</plugin>
 			
 			<!-- GPG -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -98,38 +98,16 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 	
-	<dependencies>  
-		<dependency> 
-			<groupId>com.xnx3.util</groupId>
-			<artifactId>xnx3-util</artifactId>
-			<version>1.10</version>
-		</dependency>
+	<dependencies>
 		<dependency> 
 			<groupId>cn.zvo.file</groupId>
 			<artifactId>core</artifactId>
 			<version>1.0</version>
-		</dependency>
-			
-			
-	  	<!-- 华为云依赖 -->
-		<dependency>
-			<groupId>com.huaweicloud</groupId>
-			<artifactId>esdk-obs-java</artifactId>
-			<version>3.19.5</version>
-			<exclusions>
-			        <exclusion>
-			            <groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-core</artifactId>
-			       </exclusion>
-			       <exclusion>
-			            <groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-api</artifactId>
-			       </exclusion>
-			</exclusions>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	

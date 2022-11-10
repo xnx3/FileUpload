@@ -49,8 +49,14 @@
 	<modules>
 		<!-- 核心实现,带着默认的本地存储的方式 -->
 		<module>core</module>
+		
+		<!-- 使用本身磁盘进行存储 -->
+		<module>mode_localServer</module>
 		<!-- 使用华为云OBS存储 -->
-		<module>huaweicloudOBS</module>
+		<module>mode_huaweicloudOBS</module>
+		
+		<!-- 针对框架：springboot -->
+		<module>framework_springboot</module>
     </modules>
 	
 	
@@ -95,7 +101,7 @@
 			</plugin>
 			
 			<!-- GPG -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -108,6 +114,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			 -->
 		</plugins>
 	</build>
 	

@@ -13,10 +13,10 @@ public class UploadFileVO extends BaseVO {
 	 */
 	public final static int NOTFILE=2;
 	
-	private String fileName;	//上传成功后的文件名，如 "xnx3.jar"
-	private String path;		//上传成功后的路径，如 "/jar/file/xnx3.jar"
-	private String url;			//文件上传成功后，外网访问的url
-	private long size;			//上传的文件的大小，单位 KB
+	public String fileName;	//上传成功后的文件名，如 "xnx3.jar"
+	public String path;		//上传成功后的路径，如 "/jar/file/xnx3.jar"
+	public String url;			//文件上传成功后，外网访问的url
+	public long size;			//上传的文件的大小，单位 KB
 	
 	public UploadFileVO() {
 		
@@ -62,7 +62,7 @@ public class UploadFileVO extends BaseVO {
 	}
 	/**
 	 * 文件上传成功后，外网访问的url
-	 * @return
+	 * @return 返回如  http://test.zvo.cn/jar/file/xnx3.jar
 	 */
 	public String getUrl() {
 		return url;

@@ -1,17 +1,18 @@
-package cn.zvo.file;
+package cn.zvo.file.mode.huaweicloudOBS;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import com.obs.services.exception.ObsException;
+import com.obs.services.model.DeleteObjectResult;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
 import com.obs.services.model.ObsObject;
-
+import com.obs.services.model.PutObjectResult;
+import com.xnx3.BaseVO;
+import cn.zvo.file.StorageModeInterface;
 import cn.zvo.file.bean.SubFileBean;
-import cn.zvo.file.huaweicloudOBS.OBSHandler;
 import cn.zvo.file.vo.UploadFileVO;
 
 /**
@@ -23,6 +24,14 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	public OBSHandler obsHandler;	//禁用，通过getObsUtil() 获取
 	public String obsBucketName;		// 当前进行操作桶的名称
 	
+	/**
+	 * 
+	 * @param key 
+	 * @param secret
+	 * @param endpoint
+	 * @param obsname
+	 * @param netUrl
+	 */
 	public HuaweiyunOBSMode(String key, String secret, String endpoint, String obsname, String netUrl) {
 		obsHandler = new OBSHandler(key,secret,endpoint);
 		// 如果设置过CDN的路径测设置为CDN路径，没有设置则为桶原生的访问路径
@@ -35,7 +44,6 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	
 	/**
 	 * 获取华为云OBS的操作类
-	 * @author 李鑫
 	 * @return 当前华为云OBS的操作类型
 	 */
 	public OBSHandler getObsHander() {
@@ -43,92 +51,35 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	}
 	
 	/**
-	 * 上传字符串到OBS为文件
-	 * @author 李鑫
-	 * @param path 存储文件的路径和名称 例："site/1.txt"
-	 * @param text 上传的字符串文本信息
-	 * @param encode 上传的编码格式 例："UTF-8"
-	 */
-	@Override
-	public void putStringFile(String path, String text, String encode) {
-		try {
-			getObsHander().putStringFile(obsBucketName, path, text, encode);
-		} catch (ObsException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
-	
-//	/**
-//	 * 上传本地文件到OBS
-//	 * @author 李鑫
-//	 * @param filePath 上传文件路径和名称 例："site/1.txt"
-//	 * @param localFile 需要上传的本地文件
-//	 * @return {@link com.xnx3.j2ee.vo.UploadFileVO} result 1: 成功；0 失败。
-//	 */
-//	@Override
-//	public UploadFileVO put(String filePath, File localFile) {
-//		return getObsHander().putLocalFile(obsBucketName, filePath, localFile);
-//	}
-//	
-	/**
 	 * 通过流进行上传文件
-	 * @author 李鑫
 	 * @param path 上传文件路径和名称 例："site/1.txt"
 	 * @param inputStream 需要上传文件的输入流
 	 * @return {@link com.xnx3.j2ee.vo.UploadFileVO} result 1: 成功；0 失败。
 	 */
 	@Override
-	public UploadFileVO put(String path, InputStream inputStream) {
+	public UploadFileVO uploadFile(String path, InputStream inputStream) {
 		return getObsHander().putFileByStream(obsBucketName, path, inputStream);
-	}
-	
-	/**
-	 * 获取指定文件的文本内容
-	 * @author 李鑫
-	 * @param path 进行操作的文件路径 例:"site/1.txt"
-	 * @return 文件的文本内容
-	 */
-	@Override
-	public String getTextByPath(String path) {
-		String content = null;
-		byte[] bytes = null;
-		try {
-			bytes = getObsHander().getFileByteArray(obsBucketName, path);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if(bytes == null){
-			return null;
-		}
-		try {
-			content = new String(bytes, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return content;
 	}
 
 	/**
 	 * 删除文件
-	 * @author 李鑫
 	 * @param filePath 需要删除的文件路径加名称 例："site/1.sh"
+	 * @return {@link BaseVO}
 	 */
 	@Override
-	public void deleteObject(String filePath) {
-		getObsHander().deleteObject(obsBucketName, filePath);
+	public BaseVO deleteObject(String filePath) {
+		DeleteObjectResult result = getObsHander().deleteObject(obsBucketName, filePath);
+		
+		//成功
+		if(result.getStatusCode() == 200) {
+			return BaseVO.success();
+		}else {
+			return BaseVO.failure("failure, code:"+result.getStatusCode()+", obs requestId:"+result.getRequestId());
+		}
 	}
-	
-//	@Override
-//	public void putForUEditor(String filePath, InputStream input, ObjectMetadata meta) {
-//		com.obs.services.model.ObjectMetadata metaData = new com.obs.services.model.ObjectMetadata();
-//		getObsHander().putFilebyInstreamAndMeta(obsBucketName, filePath, input, metaData);
-//	}
 	
 	/**
 	 * 获得指定路径下的对象个数
-	 * @author 李鑫
 	 * @param path 指定查询的文件夹路径 例：“site/”
 	 * @return 
 	 */
@@ -139,7 +90,6 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	
 	/**
 	 * OBS内对象复制
-	 * @author 李鑫
 	 * @param originalFilePath 源文件的路径和文件名 例："site/2010/example.txt"
 	 * @param newFilePath 目标文件的路径和文件名 例："site/2010/example_bak.txt"
 	 */
@@ -192,8 +142,30 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	}
 
 	@Override
-	public void createFolder(String path) {
-		getObsHander().mkdirFolder(obsBucketName, path);
+	public BaseVO createFolder(String path) {
+		PutObjectResult result = getObsHander().mkdirFolder(obsBucketName, path);
+		UploadFileVO uploadFileVO = getObsHander().getUploadFileVO(result);
+	
+		BaseVO vo = new BaseVO();
+		vo.setBaseVO(uploadFileVO.getResult(), uploadFileVO.getInfo());
+		return vo;
+	}
+
+	@Override
+	public InputStream getFile(String path) {
+		String content = null;
+		byte[] bytes = null;
+		try {
+			bytes = getObsHander().getFileByteArray(obsBucketName, path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(bytes == null){
+			return null;
+		}
+		
+		InputStream input = new ByteArrayInputStream(bytes);
+		return input;
 	}
 	
 }

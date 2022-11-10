@@ -1,4 +1,4 @@
-package cn.zvo.file.huaweicloudOBS;
+package cn.zvo.file.mode.huaweicloudOBS;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -401,7 +401,7 @@ public class OBSHandler {
 	 * @param result 华为云文件上传返回的结果封装类
 	 * @return {@link com.xnx3.j2ee.vo.UploadFileVO} 经过封装的UploadFileVO类
 	 */
-	private UploadFileVO getUploadFileVO(PutObjectResult result) {
+	public UploadFileVO getUploadFileVO(PutObjectResult result) {
 		UploadFileVO vo = new UploadFileVO();
 		// 上传成功
 		if(result.getStatusCode() == 200) {
