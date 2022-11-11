@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.mode;
+package cn.zvo.fileupload.storage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +13,7 @@ import com.xnx3.BaseVO;
 import com.xnx3.FileUtil;
 import com.xnx3.Log;
 import com.xnx3.StringUtil;
-import cn.zvo.fileupload.StorageModeInterface;
+import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
@@ -22,16 +22,14 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  * @author 管雷鸣
  *
  */
-public class LocalServerMode implements StorageModeInterface{
+public class LocalStorage implements StorageInterface{
 	
 	//附件保存在当前服务器上，保存的路径是哪个? 如果不设置，默认是保存到当前项目的根路径下
 	private String localFilePath;
-	//文件URL访问域名，格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾。 例如上传了一个文件到 image/head.jpg ，那这个文件的URL为 netUrl+"image/head.jpg"
-	public String netUrl;
 	
 	public String getLocalFilePath() {
 		if(localFilePath == null) {
-			String path = new LocalServerMode().getClass().getResource("/").getPath();
+			String path = this.getClass().getResource("/").getPath();
 			localFilePath = path.replace("WEB-INF/classes/", "");
 		}
 		return localFilePath;
@@ -39,16 +37,6 @@ public class LocalServerMode implements StorageModeInterface{
 	public void setLocalFilePath(String localFilePath) {
 		this.localFilePath = localFilePath;
 	}
-
-	/**
-	 * 文件URL访问域名，格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾。 例如上传了一个文件到 image/head.jpg ，那这个文件的URL为 netUrl+"image/head.jpg"
-	 * <br/>如果不设置此，那文件上传成功后，也就是 UploadFileVO 返回的 url 将无效，只是一个相对路径 / 根路径开头的，而非绝对路径直接提供网络访问的
-	 * @param netUrl 格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾
-	 */
-	public void setNetUrl(String netUrl) {
-		this.netUrl = netUrl;
-	}
-
 
 	@Override
 	public UploadFileVO uploadFile(String path, InputStream inputStream) {
@@ -70,7 +58,6 @@ public class LocalServerMode implements StorageModeInterface{
 			vo.setFileName(file.getName());
 			vo.setInfo("success");
 			vo.setPath(path);
-			vo.setUrl((this.netUrl == null? "/":this.netUrl)+path);
 		} catch (IOException e) {
 			vo.setBaseVO(BaseVO.FAILURE, e.getMessage());
 			e.printStackTrace();

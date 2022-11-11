@@ -14,7 +14,7 @@ import com.xnx3.Lang;
 import com.xnx3.Log;
 import com.xnx3.StringUtil;
 import cn.zvo.fileupload.bean.SubFileBean;
-import cn.zvo.fileupload.mode.LocalServerMode;
+import cn.zvo.fileupload.storage.LocalStorage;
 import cn.zvo.fileupload.vo.*;
 import com.xnx3.media.ImageUtil;
 
@@ -35,8 +35,8 @@ public class FileUpload{
 	//允许上传的后缀名数组，存储如 jpg 、 gif、zip
 	public static String[] allowUploadSuffixs;
 	
-	//实际执行的存储动作。不可直接使用，需使用 getStorageMode() 获取
-	private StorageModeInterface storageMode;					
+	//实际执行的存储动作。不可直接使用，需使用 getStorage() 获取
+	private StorageInterface storage;					
 	
 	//文件URL访问域名，格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾。 例如上传了一个文件到 image/head.jpg ，那这个文件的URL为 netUrl+"image/head.jpg"
 	public String netUrl = null;
@@ -58,24 +58,24 @@ public class FileUpload{
 	}
 	/**
 	 * 设置当前使用的存储模式。如果设置了此处，那么数据库中 ATTACHMENT_FILE_MODE 字段设置的存储方式将会失效，不会起任何作用。以此接口的设置为准
-	 * @param storageMode 实现 {@link StorageModeInterface}接口
+	 * @param storage 实现 {@link StorageInterface}接口
 	 */
-	public void setStorageMode(StorageModeInterface storageMode) {
-		this.storageMode = storageMode;
+	public void setStorage(StorageInterface storage) {
+		this.storage = storage;
 	}
 
 	/**
 	 * 获取当前使用的存储模式，进行存储。
 	 * @return 如果在数据库表 system 表加载成功之前调用此方法，会返回null，当然，这个空指针几乎可忽略。实际使用中不会有这种情况
 	 */
-	public StorageModeInterface getStorageMode(){
-		if(this.storageMode == null){
+	public StorageInterface getstorage(){
+		if(this.storage == null){
 			//赋予默认本地存储模式
-			LocalServerMode localServerMode = new LocalServerMode();
-			this.storageMode = localServerMode;
+			LocalStorage localStorage = new LocalStorage();
+			this.storage = localStorage;
 			Log.info("use default storage mode : local server");
 		}
-		return storageMode;
+		return storage;
 	}
 	
 	/**
@@ -210,7 +210,7 @@ public class FileUpload{
 		
 		
 		//取得当前实现的文件的名字，例如本地存储的命名为 LocalServerMode.java ,那这里会取到 LocalServerMode
-		String currentModeFileName = this.getStorageMode().getClass().getSimpleName();
+		String currentModeFileName = this.getstorage().getClass().getSimpleName();
 		if(currentModeFileName.equalsIgnoreCase(mode)) {
 			return true;
 		}
@@ -221,7 +221,7 @@ public class FileUpload{
 	public static void main(String[] args) {
 		FileUpload file = new FileUpload();
 		
-		System.out.println(file.getStorageMode().getClass().getSimpleName());
+		System.out.println(file.getstorage().getClass().getSimpleName());
 		
 	}
 
@@ -353,7 +353,7 @@ public class FileUpload{
 		vo.setSize(lengthKB);
 		
 		//执行上传
-		vo = getStorageMode().uploadFile(path, inputStream);
+		vo = getstorage().uploadFile(path, inputStream);
 		if(vo.getSize() < 1) {
 			vo.setSize(lengthKB);
 		}
@@ -387,7 +387,7 @@ public class FileUpload{
 	 * @return 返回其文本内容。若找不到，或出错，则返回 null
 	 */
 	public String getText(String path){
-		InputStream is = getStorageMode().getFile(path);
+		InputStream is = getstorage().getFile(path);
 		if(is == null) {
 			return null;
 		}
@@ -406,7 +406,7 @@ public class FileUpload{
 	 * @param filePath 文件所在的路径，如 "jar/file/xnx3.jpg"
 	 */
 	public void deleteFile(String filePath){
-		getStorageMode().deleteFile(filePath);
+		getstorage().deleteFile(filePath);
 	}
 	
 	/**
@@ -415,7 +415,7 @@ public class FileUpload{
 	 * @param newFilePath 复制的文件所在的路径，所放的路径。(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 */
 	public void copyFile(String originalFilePath, String newFilePath){
-		getStorageMode().copyFile(originalFilePath, newFilePath);
+		getstorage().copyFile(originalFilePath, newFilePath);
 	}
 	
 	/**
@@ -498,7 +498,7 @@ public class FileUpload{
 	 * @return 计算出来的大小。单位：字节，B。  千分之一KB
 	 */
 	public long getDirectorySize(String path){
-		return getStorageMode().getDirectorySize(path);
+		return getstorage().getDirectorySize(path);
 	}
 	
 	/**
@@ -507,7 +507,7 @@ public class FileUpload{
 	 * @return 该目录下一级子文件（如果有文件夹，也包含文件夹）列表。如果size为0，则是没有子文件或文件夹。无论什么情况不会反null
 	 */
 	public List<SubFileBean> getSubFileList(String path){
-		return getStorageMode().getSubFileList(path);
+		return getstorage().getSubFileList(path);
 	}
 	
 
@@ -517,7 +517,7 @@ public class FileUpload{
 	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
 	 */
 	public long getFileSize(String path){
-		return getStorageMode().getFileSize(path);
+		return getstorage().getFileSize(path);
 	}
 	
 	/**
@@ -525,7 +525,7 @@ public class FileUpload{
 	 * @param path 要创建的文件路径，传入如 site/219/test/ 则是创建 test 文件夹
 	 */
 	public void createFolder(String path) {
-		getStorageMode().createFolder(path);
+		getstorage().createFolder(path);
 	}
 	
 }

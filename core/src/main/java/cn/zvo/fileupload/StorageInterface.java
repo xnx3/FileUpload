@@ -7,11 +7,11 @@ import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
- * 存储模块接口。比如阿里云、华为云、服务器本地存储，都要实现这个接口
+ * 存储接口。比如阿里云、华为云、服务器本地存储，都要实现这个接口
  * @author 管雷鸣
  *
  */
-public interface StorageModeInterface {
+public interface StorageInterface {
 
 	/**
 	 * 上传文件。上传后的文件名固定

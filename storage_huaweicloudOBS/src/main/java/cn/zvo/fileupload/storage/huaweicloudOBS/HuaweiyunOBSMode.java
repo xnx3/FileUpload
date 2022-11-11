@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.mode.huaweicloudOBS;
+package cn.zvo.fileupload.storage.huaweicloudOBS;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import com.obs.services.model.ObjectListing;
 import com.obs.services.model.ObsObject;
 import com.obs.services.model.PutObjectResult;
 import com.xnx3.BaseVO;
-import cn.zvo.fileupload.StorageModeInterface;
+import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
@@ -20,7 +20,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  * @author 管雷鸣
  *
  */
-public class HuaweiyunOBSMode implements StorageModeInterface {
+public class HuaweiyunOBSMode implements StorageInterface {
 	public OBSHandler obsHandler;	//禁用，通过getObsUtil() 获取
 	public String obsBucketName;		// 当前进行操作桶的名称
 	

@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>fileupload.mode.huaweicloudOBS</artifactId>
+	<artifactId>fileupload.storage.huaweicloudOBS</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-mode-huaweicloudOBS</name>
+	<name>file-storage-huaweicloudOBS</name>
 	<description>java file util</description>
 	<url>https://github.com/xnx3/FileUpload</url>
 
