@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.framework.springboot;
+package cn.zvo.fileupload.framework.springmvc;
 
 import java.io.IOException;
 import java.io.InputStream;

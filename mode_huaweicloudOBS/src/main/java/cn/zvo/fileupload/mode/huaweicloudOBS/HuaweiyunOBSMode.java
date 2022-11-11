@@ -67,7 +67,7 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	 * @return {@link BaseVO}
 	 */
 	@Override
-	public BaseVO deleteObject(String filePath) {
+	public BaseVO deleteFile(String filePath) {
 		DeleteObjectResult result = getObsHander().deleteObject(obsBucketName, filePath);
 		
 		//成功
@@ -94,7 +94,7 @@ public class HuaweiyunOBSMode implements StorageModeInterface {
 	 * @param newFilePath 目标文件的路径和文件名 例："site/2010/example_bak.txt"
 	 */
 	@Override
-	public void copyObject(String originalFilePath, String newFilePath) {
+	public void copyFile(String originalFilePath, String newFilePath) {
 		getObsHander().copyObject(obsBucketName, originalFilePath, obsBucketName, newFilePath);
 	}
 

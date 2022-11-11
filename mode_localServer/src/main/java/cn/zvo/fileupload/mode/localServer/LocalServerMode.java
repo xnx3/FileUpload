@@ -67,7 +67,7 @@ public class LocalServerMode implements StorageModeInterface{
 	}
 
 	@Override
-	public BaseVO deleteObject(String filePath) {
+	public BaseVO deleteFile(String filePath) {
 		try {
 			FileUtil.deleteFile(this.getLocalFilePath()+filePath);
 			return BaseVO.success();
@@ -84,7 +84,7 @@ public class LocalServerMode implements StorageModeInterface{
 	}
 
 	@Override
-	public void copyObject(String originalFilePath, String newFilePath) {
+	public void copyFile(String originalFilePath, String newFilePath) {
 		directoryInit(newFilePath);
 		FileUtil.copyFile(this.getLocalFilePath() + originalFilePath, this.getLocalFilePath() + newFilePath);
 	}

@@ -55,8 +55,10 @@
 		<!-- 使用华为云OBS存储 -->
 		<module>mode_huaweicloudOBS</module>
 		
-		<!-- 针对框架：springboot -->
-		<module>framework_springboot</module>
+		<!-- 针对框架：servlet，也就是基本的Servlet的项目都可用 -->
+		<module>framework_servlet</module>
+		<!-- 针对框架：springmvc （可在springboot中使用） -->
+		<module>framework_springmvc</module>
     </modules>
 	
 	

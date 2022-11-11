@@ -264,12 +264,6 @@ public class FileUpload{
 	public UploadFileVO uploadStringFile(String filePath, String text, String encode){
 		try {
 			InputStream inputStream = StringUtil.stringToInputStream(text, encode);
-			try {
-				System.out.println(inputStream.available());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return uploadFile(filePath, inputStream);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -336,7 +330,15 @@ public class FileUpload{
 	public UploadFileVO uploadFile(String path,InputStream inputStream){
 		UploadFileVO vo = new UploadFileVO();
 		
-		//判断文件大小是否超出最大限制的大小
+		/** 判断存储出去的后缀是否合规 **/
+		String fileSuffix = null; //获取上传的文件的后缀
+		fileSuffix = Lang.findFileSuffix(path);
+		if(!allowUploadSuffix(fileSuffix)){
+			vo.setBaseVO(UploadFileVO.FAILURE, "该后缀["+fileSuffix+"]不允许被上传");
+			return vo;
+		}
+		
+		/** 判断文件大小是否超出最大限制的大小 **/
 		int lengthKB = 0;
 		try {
 			lengthKB = (int) Math.ceil(inputStream.available()/1024);
@@ -350,9 +352,13 @@ public class FileUpload{
 		}
 		vo.setSize(lengthKB);
 		
-		UploadFileVO modeVO = getStorageMode().uploadFile(path, inputStream);
-		modeVO.setSize(vo.getSize());
-		return modeVO;
+		//执行上传
+		vo = getStorageMode().uploadFile(path, inputStream);
+		if(vo.getSize() < 1) {
+			vo.setSize(lengthKB);
+		}
+		vo.setUrl(getNetUrl()+vo.getPath());	//设置网络下载地址
+		return vo;
 	}
 	
 
@@ -400,7 +406,7 @@ public class FileUpload{
 	 * @param filePath 文件所在的路径，如 "jar/file/xnx3.jpg"
 	 */
 	public void deleteFile(String filePath){
-		getStorageMode().deleteObject(filePath);
+		getStorageMode().deleteFile(filePath);
 	}
 	
 	/**
@@ -409,7 +415,7 @@ public class FileUpload{
 	 * @param newFilePath 复制的文件所在的路径，所放的路径。(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 */
 	public void copyFile(String originalFilePath, String newFilePath){
-		getStorageMode().copyObject(originalFilePath, newFilePath);
+		getStorageMode().copyFile(originalFilePath, newFilePath);
 	}
 	
 	/**

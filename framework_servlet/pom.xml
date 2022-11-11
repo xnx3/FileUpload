@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>fileupload.mode.huaweicloudOBS</artifactId>
+	<artifactId>fileupload.framework.servlet</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-mode-huaweicloudOBS</name>
-	<description>java file util</description>
+	<name>file-framework-servlet</name>
+	<description>java file upload</description>
 	<url>https://github.com/xnx3/FileUpload</url>
 
 	<licenses>
@@ -86,7 +86,7 @@
 			</plugin>
 			
 			<!-- GPG -->
-			<!-- <plugin>
+			<!--  <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -98,7 +98,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>  -->
 		</plugins>
 	</build>
 	
@@ -109,23 +109,15 @@
 			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>
-			
-	  	<!-- 华为云依赖 -->
+
+		<!-- springboot -->
 		<dependency>
-			<groupId>com.huaweicloud</groupId>
-			<artifactId>esdk-obs-java</artifactId>
-			<version>3.19.5</version>
-			<exclusions>
-			        <exclusion>
-			            <groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-core</artifactId>
-			       </exclusion>
-			       <exclusion>
-			            <groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-api</artifactId>
-			       </exclusion>
-			</exclusions>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>compile</scope>
 		</dependency>
+		
 	</dependencies>
 	
 	<distributionManagement>

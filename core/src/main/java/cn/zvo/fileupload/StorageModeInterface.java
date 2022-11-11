@@ -22,19 +22,19 @@ public interface StorageModeInterface {
 	public UploadFileVO uploadFile(String path,InputStream inputStream);
 	
 	/**
-	 * 传入一个路径，得到其 {@link InputStream}
+	 * 传入一个路径，得到其 {@link InputStream} 
+	 * <br/> 注意，像是一些稍大的文件，比如几百MB的，不建议通过此方式取
 	 * @param path 要获取的文本内容的路径，如  site/123/index.html
 	 * @return 返回文件数据。若找不到，或出错，则返回 null
 	 */
 	public InputStream getFile(String path);
-	
 	
 	/**
 	 * 删除文件
 	 * @param filePath 文件所在的路径，如 "jar/file/xnx3.jpg"
 	 * @return 执行成功，则 {@link BaseVO#getResult()} 为 {@link BaseVO#SUCCESS} 。注意，如果删除文件时，文件不存在，那接口实现时也要返回成功，因为使用者执行了这个方法后，最终结果是文件确实没了
 	 */
-	public BaseVO deleteObject(String filePath);
+	public BaseVO deleteFile(String filePath);
 	
 	/**
 	 * 获取某个目录（文件夹）占用空间的大小。如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
@@ -48,7 +48,7 @@ public interface StorageModeInterface {
 	 * @param originalFilePath 原本文件所在的路径(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 * @param newFilePath 复制的文件所在的路径，所放的路径。(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 */
-	public void copyObject(String originalFilePath, String newFilePath);
+	public void copyFile(String originalFilePath, String newFilePath);
 	
 	/**
 	 * 获取某个目录下的子文件列表。获取的只是目录下第一级的子文件，并非是在这个目录下无论目录深度是多少都列出来。

@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>fileupload.framework.springboot</artifactId>
+	<artifactId>fileupload.framework.springmvc</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-framework-springboot</name>
+	<name>file-framework-springmvc</name>
 	<description>java file upload</description>
 	<url>https://github.com/xnx3/FileUpload</url>
 
@@ -107,7 +107,7 @@
 			<groupId>cn.zvo.fileupload</groupId>
 			<artifactId>fileupload.core</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- springboot -->
@@ -115,8 +115,9 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>2.6.1</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
+		
 	</dependencies>
 	
 	<distributionManagement>

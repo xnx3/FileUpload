@@ -107,7 +107,7 @@
 			<groupId>cn.zvo.fileupload</groupId>
 			<artifactId>fileupload.core</artifactId>
 			<version>1.0</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	
