@@ -23,7 +23,7 @@ import com.xnx3.media.ImageUtil;
  * 如果是localFile ，则需要设置 AttachmentFile.netUrl
  * @author 管雷鸣
  */
-public class FileUtil{
+public class FileUpload{
 	public final static String UTF8="UTF-8";
 	public final static String GBK="GBK";
 	
@@ -219,7 +219,7 @@ public class FileUtil{
 	}
 	
 	public static void main(String[] args) {
-		FileUtil file = new FileUtil();
+		FileUpload file = new FileUpload();
 		
 		System.out.println(file.getStorageMode().getClass().getSimpleName());
 		
@@ -258,7 +258,7 @@ public class FileUtil{
 	 * 给出文本内容，写出文件
 	 * @param filePath 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
 	 * @param text 文本内容
-	 * @param encode 编码格式，可传入 {@link FileUtil#GBK}、{@link FileUtil#UTF8}
+	 * @param encode 编码格式，可传入 {@link FileUpload#GBK}、{@link FileUpload#UTF8}
 	 * @return  {@link UploadFileVO}
 	 */
 	public UploadFileVO uploadStringFile(String filePath, String text, String encode){

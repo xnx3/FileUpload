@@ -6,7 +6,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 public class Demo {
 	public static void main(String[] args) {
 		
-		cn.zvo.fileupload.FileUtil file = new cn.zvo.fileupload.FileUtil();
+		cn.zvo.fileupload.FileUpload file = new cn.zvo.fileupload.FileUpload();
 		
 		//StorageModeInterface storage = new HuaweiyunOBSMode(null, null, null, null, null);
 		

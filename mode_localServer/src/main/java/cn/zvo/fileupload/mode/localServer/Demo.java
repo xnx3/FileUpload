@@ -1,12 +1,11 @@
 package cn.zvo.fileupload.mode.localServer;
 
-import com.xnx3.FileUtil;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 public class Demo {
 	public static void main(String[] args) {
 		
-		cn.zvo.fileupload.FileUtil file = new cn.zvo.fileupload.FileUtil();
+		cn.zvo.fileupload.FileUpload file = new cn.zvo.fileupload.FileUpload();
 		//StorageModeInterface storage = new HuaweiyunOBSMode(null, null, null, null, null);
 		
 		//设置允许上传的后缀名

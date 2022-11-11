@@ -13,7 +13,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  * 文件、图片、附件的上传等操作
  * @author 管雷鸣
  */
-public class FileUtil extends cn.zvo.fileupload.FileUtil {
+public class FileUpload extends cn.zvo.fileupload.FileUpload {
 
 	/**
 	 * SpringMVC 上传文件，配置允许上传的文件后缀再 systemConfig.xml 的attachmentFile.allowUploadSuffix.suffix节点
