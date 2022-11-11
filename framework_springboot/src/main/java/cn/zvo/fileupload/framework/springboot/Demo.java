@@ -1,12 +1,12 @@
-package cn.zvo.file.framework.springboot;
+package cn.zvo.fileupload.framework.springboot;
 
 import com.xnx3.net.HttpUtil;
-import cn.zvo.file.vo.UploadFileVO;
+import cn.zvo.fileupload.vo.UploadFileVO;
 
 public class Demo {
 	public static void main(String[] args) {
 		
-		cn.zvo.file.FileUtil file = new cn.zvo.file.FileUtil();
+		cn.zvo.fileupload.FileUtil file = new cn.zvo.fileupload.FileUtil();
 		
 		//StorageModeInterface storage = new HuaweiyunOBSMode(null, null, null, null, null);
 		

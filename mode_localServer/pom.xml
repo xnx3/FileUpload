@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cn.zvo.file</groupId>
-	<artifactId>mode.localServer</artifactId>
+	<groupId>cn.zvo.fileupload</groupId>
+	<artifactId>fileupload.mode.localServer</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>file-mode-localServer</name>
-	<description>java file util</description>
-	<url>https://github.com/xnx3/FileUtil</url>
+	<description>java file upload</description>
+	<url>https://github.com/xnx3/FileUpload</url>
 
 	<licenses>
 		<license>
@@ -40,9 +40,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/xnx3/FileUtil.git</connection>
-		<developerConnection>scm:git:ssh://github.com/xnx3/FileUtil.git</developerConnection>
-		<url>github.com/xnx3/FileUtil</url>
+		<connection>scm:git:git://github.com/xnx3/FileUpload.git</connection>
+		<developerConnection>scm:git:ssh://github.com/xnx3/FileUpload.git</developerConnection>
+		<url>github.com/xnx3/FileUpload</url>
 	</scm>
 
 	<build>
@@ -104,8 +104,8 @@
 	
 	<dependencies>
 		<dependency> 
-			<groupId>cn.zvo.file</groupId>
-			<artifactId>core</artifactId>
+			<groupId>cn.zvo.fileupload</groupId>
+			<artifactId>fileupload.core</artifactId>
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
