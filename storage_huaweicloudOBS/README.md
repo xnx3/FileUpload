@@ -43,11 +43,28 @@ System.out.println(vo);	//打印结果
 
 [点此查看 cn.zvo.fileupload.storage.huaweicloudOBS.Demo.java 文件](src/main/java/cn/zvo/fileupload/storage/huaweicloudOBS/Demo.java)
 
-## 快速体验
-#### 1. git拉下本项目
-#### 2. 运行
-运行 ```` cn.zvo.fileupload.storage.huaweicloudOBS.Demo.java ```` 即可看到控制台输出结果：
+## 2. 快速体验
+#### 2.1 git拉下本项目
+#### 2.2 修改华为云OBS相关参数
+打开 ```` cn.zvo.fileupload.storage.huaweicloudOBS.Demo.java ````  
+设置华为云obs的相关参数  
+
+````
+/**** 定义存储位置，存储到华为云OBS中 ****/
+String key = "H0TPUBC6YDZWRxxxxxxx";	//华为云的 Access Key Id
+String secret = "je56lHbJ62VOhoSXcsfI9InmPAtVY9xxxxxxxxxx";	//华为云的 Access Key Secret
+String endpoint = "obs.cn-north-4.myhuaweicloud.com";	//华为云连接的地址节点,传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 https://developer.huaweicloud.com/endpoint?OBS
+String obsname = "cha-template";	//obs桶的名称
+HuaweicloudOBSStorage obsStorage = new HuaweicloudOBSStorage(key, secret, endpoint, obsname);
+````
+
+#### 2.3 运行 
+设置好参数后运行，即可看到控制台输出结果：
 
 ````
 UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-north-4.myhuaweicloud.com/abc/1.txt, getResult()=1, getInfo()=success]
 ````
+
+## 3. 在SpringBoot项目中使用
+
+参见 [demo_springboot/README.md](../demo_springboot/README.md) 
