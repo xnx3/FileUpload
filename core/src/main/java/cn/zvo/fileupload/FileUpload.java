@@ -13,6 +13,8 @@ import com.xnx3.BaseVO;
 import com.xnx3.Lang;
 import com.xnx3.Log;
 import com.xnx3.StringUtil;
+import com.xnx3.UrlUtil;
+
 import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.*;
@@ -381,11 +383,11 @@ public class FileUpload{
 		
 		//设置网络下载地址
 		String domain = getDomain();
-		if(domain == null) {
-			vo.setUrl(vo.getPath());
-		}else {
+		if(domain != null) {
 			vo.setUrl(domain+vo.getPath());
 		}
+		//提取文件名
+		vo.setFileName(UrlUtil.getFileName("http://zvo.cn/"+path));
 		
 		return vo;
 	}

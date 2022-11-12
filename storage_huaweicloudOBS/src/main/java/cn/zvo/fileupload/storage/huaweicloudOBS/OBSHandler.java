@@ -289,7 +289,7 @@ public class OBSHandler {
 		}else{
 			endpoint_ = this.endpoint;
 		}
-		return "//" + obsBucketName + "." + endpoint_ + "/";
+		return "https://" + obsBucketName + "." + endpoint_ + "/";
 	}
 	
 	/**

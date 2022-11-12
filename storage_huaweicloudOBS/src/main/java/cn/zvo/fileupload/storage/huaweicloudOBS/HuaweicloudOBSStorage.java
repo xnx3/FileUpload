@@ -28,7 +28,7 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	 * 文件上传-华为云OBS
 	 * @param key 华为云的 Access Key Id
 	 * @param secret 华为云的 Access Key Secret
-	 * @param endpoint 华为云连接的地址节点
+	 * @param endpoint 华为云连接的地址节点，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
 	 * @param obsname 桶的名称
 	 */
 	public HuaweicloudOBSStorage(String key, String secret, String endpoint, String obsname) {
@@ -57,7 +57,8 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	 */
 	@Override
 	public UploadFileVO uploadFile(String path, InputStream inputStream) {
-		return getObsHander().putFileByStream(obsBucketName, path, inputStream);
+		UploadFileVO vo = getObsHander().putFileByStream(obsBucketName, path, inputStream);
+		return vo;
 	}
 
 	/**
