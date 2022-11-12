@@ -67,4 +67,4 @@ UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-no
 
 ## 3. 在SpringBoot项目中使用
 
-参见 [demo_springboot/README.md](../demo_springboot/README.md) 
+参见 [demo_springboot/](../demo_springboot/) 
