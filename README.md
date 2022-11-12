@@ -1,6 +1,6 @@
 # 文件上传
 
-![](http://res.zvo.cn/fileupload/framework.png)
+![](http://res.zvo.cn/fileupload/framework.png?t=20221112)
 
 ## 场景：普通Java项目
 也就是普通javase的项目使用
