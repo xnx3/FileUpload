@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>framework.springboot</artifactId>
 	<version>1.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<description>java file upload</description>
 	<url>https://github.com/xnx3/FileUpload</url>
@@ -43,22 +43,7 @@
 		<developerConnection>scm:git:ssh://github.com/xnx3/FileUpload.git</developerConnection>
 		<url>github.com/xnx3/FileUpload</url>
 	</scm>
-	
-	
-	<modules>
-		<!-- 核心实现,带着默认的本地存储的方式 -->
-		<module>core</module>
-		
-		<!-- 使用华为云OBS存储 -->
-		<module>storage_huaweicloudOBS</module>
-		
-		<!-- 针对框架：servlet，也就是基本的Servlet的项目都可用 -->
-		<module>framework_servlet</module>
-		<!-- 针对框架：springmvc （可在springboot中使用） -->
-		<module>framework_springboot</module>
-    </modules>
-	
-	
+
 	<build>
 		<plugins>
 			<!-- Source -->
@@ -100,7 +85,7 @@
 			</plugin>
 			
 			<!-- GPG -->
-			<!-- <plugin>
+			<!--  <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.5</version>
@@ -112,12 +97,26 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			 -->
+			</plugin>  -->
 		</plugins>
 	</build>
 	
-	<dependencies>
+	<dependencies>  
+		<dependency> 
+			<groupId>cn.zvo.fileupload</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- springboot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.6.1</version>
+			<scope>compile</scope>
+		</dependency>
+		
 	</dependencies>
 	
 	<distributionManagement>

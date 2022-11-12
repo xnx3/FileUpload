@@ -9,7 +9,6 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>file-framework-servlet</name>
 	<description>java file upload</description>
 	<url>https://github.com/xnx3/FileUpload</url>
 
@@ -105,7 +104,7 @@
 	<dependencies>  
 		<dependency> 
 			<groupId>cn.zvo.fileupload</groupId>
-			<artifactId>fileupload.core</artifactId>
+			<artifactId>core</artifactId>
 			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>

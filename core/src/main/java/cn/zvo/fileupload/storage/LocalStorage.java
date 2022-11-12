@@ -34,6 +34,11 @@ public class LocalStorage implements StorageInterface{
 		}
 		return localFilePath;
 	}
+	
+	/**
+	 * 设置本地存储的文件，是存放在哪个路径
+	 * @param localFilePath 要存放在哪个路径，传入如： ""
+	 */
 	public void setLocalFilePath(String localFilePath) {
 		this.localFilePath = localFilePath;
 	}

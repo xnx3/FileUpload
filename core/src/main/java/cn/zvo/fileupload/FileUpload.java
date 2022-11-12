@@ -39,31 +39,24 @@ public class FileUpload{
 	private StorageInterface storage;					
 	
 	//文件URL访问域名，格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾。 例如上传了一个文件到 image/head.jpg ，那这个文件的URL为 netUrl+"image/head.jpg"
-	public String netUrl = null;
+	public String domain = null;
 	
 	/**
-	 * 获取附件访问的url地址
+	 * 获取上传后文件所访问URL的域名
 	 * @return 返回如 http://res.weiunity.com/   若找不到，则返回null
 	 */
-	public String getNetUrl() {
-		return netUrl;
+	public String getDomain() {
+		return domain;
 	}
 
 	/**
 	 * 设置当前的netUrl
-	 * @param url 当前正在使用的附件url前缀，传入如： http://xxxx.com/  注意格式，后面以 / 结尾
+	 * @param domain 当前正在使用的附件的域名，传入如： http://xxxx.com/  注意格式，后面以 / 结尾
 	 */
-	public void setNetUrl(String url){
-		url = netUrl;
+	public void setDomain(String domain){
+		this.domain = domain;
 	}
-	/**
-	 * 设置当前使用的存储模式。如果设置了此处，那么数据库中 ATTACHMENT_FILE_MODE 字段设置的存储方式将会失效，不会起任何作用。以此接口的设置为准
-	 * @param storage 实现 {@link StorageInterface}接口
-	 */
-	public void setStorage(StorageInterface storage) {
-		this.storage = storage;
-	}
-
+	
 	/**
 	 * 获取当前使用的存储模式，进行存储。
 	 * @return 如果在数据库表 system 表加载成功之前调用此方法，会返回null，当然，这个空指针几乎可忽略。实际使用中不会有这种情况
@@ -77,6 +70,58 @@ public class FileUpload{
 		}
 		return storage;
 	}
+	
+	/**
+	 * 设置当前使用的存储模式。如果设置了此处，那么数据库中 ATTACHMENT_FILE_MODE 字段设置的存储方式将会失效，不会起任何作用。以此接口的设置为准
+	 * @param storage 实现 {@link StorageInterface}接口
+	 */
+	public void setStorage(StorageInterface storage) {
+		this.storage = storage;
+	}
+	
+	
+	/**
+	 * 判断当前文件附件存储使用的是哪种存储方式
+	 * @param storageClassName 存储方式的实现类的名字，如默认带的本地存储为 {@link LocalStorage} ，这里如果要判断是否是使用的本地存储，可传入 "LocalStorage"
+	 * @return 是否使用
+	 * 			<ul>
+	 * 				<li>true ： 是此种模式</li>
+	 * 				<li>false ： 不是此种模式</li>
+	 * 			</ul>
+	 */
+	public boolean isStorage(String storageClassName){
+		//向前兼容，兼容 wm 2.25 (http://wm.zvo.cn)及以前版本的设置
+		if(storageClassName.equalsIgnoreCase("localFile")) {
+			storageClassName = "LocalServerMode";
+		}else if(storageClassName.equalsIgnoreCase("huaWeiYunOBS")) {
+			storageClassName = "HuaweiyunOBSMode";
+		}else if(storageClassName.equalsIgnoreCase("aliyunOSS")) {
+			storageClassName = "AliyunOSSMode";
+		}
+		
+		//取得当前实现的文件的名字，例如本地存储的命名为 LocalServerMode.java ,那这里会取到 LocalServerMode
+		String currentModeFileName = this.getstorage().getClass().getSimpleName();
+		if(currentModeFileName.equalsIgnoreCase(storageClassName)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 判断当前文件附件存储使用的是哪种存储方式
+	 * @param storageClass 存储方式的实现类，如默认带的本地存储为 {@link LocalStorage} ，这里如果要判断是否是使用的本地存储，可传入 LocalStorage.class
+	 * @return 是否使用
+	 * 			<ul>
+	 * 				<li>true ： 是此种模式</li>
+	 * 				<li>false ： 不是此种模式</li>
+	 * 			</ul>
+	 */
+	public boolean isStorage(Class storageClass){
+		String name = storageClass.getSimpleName();
+		return isStorage(name);
+	}
+	
 	
 	/**
 	 * 获取当前允许上传的文件的最大大小
@@ -123,6 +168,36 @@ public class FileUpload{
 		}
 		return maxFileSizeKB;
 	}
+
+	/**
+	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
+	 * @param file 要上传的文件，判断其大小是否超过系统指定的最大限制
+	 * @return 若超出大小，则返回result:Failure ，info为出错原因
+	 */
+	public BaseVO verifyFileMaxLength(File file){
+		BaseVO vo = new BaseVO();
+		if(file != null){
+			//文件的KB长度
+			int lengthKB = (int) Math.ceil(file.length()/1024);
+			vo = verifyFileMaxLength(lengthKB);
+		}
+		return vo;
+	}
+	
+	/**
+	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
+	 * @param lengthKB 要上传的文件的大小，判断其大小是否超过系统指定的最大限制，单位是KB
+	 * @return 若超出大小，则返回result:Failure ，info为出错原因
+	 */
+	public BaseVO verifyFileMaxLength(int lengthKB){
+		BaseVO vo = new BaseVO();
+		if(getMaxFileSizeKB() > 0 && lengthKB > getMaxFileSizeKB()){
+			vo.setBaseVO(BaseVO.FAILURE, "文件大小超出限制！上传大小在 "+maxFileSize+" 以内");
+			return vo;
+		}
+		return vo;
+	}
+	
 	
 	/**
 	 * 设置允许上传的文件最大是多大，比如3MB 单位为 KB、MB
@@ -164,94 +239,36 @@ public class FileUpload{
 	
 	/**
 	 * 判断当前后缀名是否在可允许上传的后缀中
-	 * @param fileSuffix 要判断的上传的文件的后缀名
+	 * @param path 上传文件要保存到的路径。传入如 site/219/index.html 当然，你也可以直接传入具体后缀，如 html
 	 * @return true：可上传，允许上传，后缀在指定的后缀列表中
 	 */
-	public boolean allowUploadSuffix(String fileSuffix){
-		if(allowUploadSuffixs == null){
-			Log.error("请先使用 setAllowUploadSuffix() 方法设置哪些后缀允许上传");
+	public boolean isAllowUpload(String path) {
+		if(path == null || path.trim().length() ==0) {
+			return false;
+		}
+		
+		String suffix;
+		if(path.indexOf(".") > -1) {
+			//发现路径，需要取后缀
+			suffix = Lang.findFileSuffix(path);
+		}else {
+			//未发现路径，传入的就是后缀
+			suffix = path;
+		}
+		
+		//判断是否设置允许上传什么后缀
+		if(allowUploadSuffixs == null || allowUploadSuffixs.length == 0){
+			Log.error("请先使用 fileUpload.setAllowUploadSuffix(\"jpg|png|txt|zip\"); 方法设置哪些后缀允许上传");
 			return false;
 		}
 		
 		//进行判断，判断传入的suffix是否在允许上传的后缀里面
 		for (int j = 0; j < allowUploadSuffixs.length; j++) {
-			if(allowUploadSuffixs[j].equalsIgnoreCase(fileSuffix)){
+			if(allowUploadSuffixs[j].equalsIgnoreCase(suffix)){
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	
-	public void isAllowUpload(String path) {
-		
-	}
-	
-	
-	/**
-	 * 判断当前文件附件存储使用的是哪种模式，存储到什么位置
-	 * @param mode 存储的代码，可直接传入如 {@link #MODE_ALIYUN_OSS}
-	 * @return 是否使用
-	 * 			<ul>
-	 * 				<li>true ： 是此种模式</li>
-	 * 				<li>false ： 不是此种模式</li>
-	 * 			</ul>
-	 */
-	public boolean isMode(String mode){
-		
-		//向前兼容，兼容 wm 2.25及以前版本的设置
-		if(mode.equalsIgnoreCase("localFile")) {
-			mode = "LocalServerMode";
-		}else if(mode.equalsIgnoreCase("huaWeiYunOBS")) {
-			mode = "HuaweiyunOBSMode";
-		}else if(mode.equalsIgnoreCase("aliyunOSS")) {
-			mode = "AliyunOSSMode";
-		}
-		
-		
-		//取得当前实现的文件的名字，例如本地存储的命名为 LocalServerMode.java ,那这里会取到 LocalServerMode
-		String currentModeFileName = this.getstorage().getClass().getSimpleName();
-		if(currentModeFileName.equalsIgnoreCase(mode)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public static void main(String[] args) {
-		FileUpload file = new FileUpload();
-		
-		System.out.println(file.getstorage().getClass().getSimpleName());
-		
-	}
-
-	/**
-	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
-	 * @param file 要上传的文件，判断其大小是否超过系统指定的最大限制
-	 * @return 若超出大小，则返回result:Failure ，info为出错原因
-	 */
-	public BaseVO verifyFileMaxLength(File file){
-		BaseVO vo = new BaseVO();
-		if(file != null){
-			//文件的KB长度
-			int lengthKB = (int) Math.ceil(file.length()/1024);
-			vo = verifyFileMaxLength(lengthKB);
-		}
-		return vo;
-	}
-	
-	/**
-	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
-	 * @param lengthKB 要上传的文件的大小，判断其大小是否超过系统指定的最大限制，单位是KB
-	 * @return 若超出大小，则返回result:Failure ，info为出错原因
-	 */
-	public BaseVO verifyFileMaxLength(int lengthKB){
-		BaseVO vo = new BaseVO();
-		if(getMaxFileSizeKB() > 0 && lengthKB > getMaxFileSizeKB()){
-			vo.setBaseVO(BaseVO.FAILURE, "文件大小超出限制！上传大小在 "+maxFileSize+" 以内");
-			return vo;
-		}
-		return vo;
 	}
 	
 	/**
@@ -331,10 +348,8 @@ public class FileUpload{
 		UploadFileVO vo = new UploadFileVO();
 		
 		/** 判断存储出去的后缀是否合规 **/
-		String fileSuffix = null; //获取上传的文件的后缀
-		fileSuffix = Lang.findFileSuffix(path);
-		if(!allowUploadSuffix(fileSuffix)){
-			vo.setBaseVO(UploadFileVO.FAILURE, "该后缀["+fileSuffix+"]不允许被上传");
+		if(!isAllowUpload(path)){
+			vo.setBaseVO(UploadFileVO.FAILURE, "该后缀不允许被上传");
 			return vo;
 		}
 		
@@ -357,11 +372,94 @@ public class FileUpload{
 		if(vo.getSize() < 1) {
 			vo.setSize(lengthKB);
 		}
-		vo.setUrl(getNetUrl()+vo.getPath());	//设置网络下载地址
+		
+		//设置网络下载地址
+		String domain = getDomain();
+		if(domain == null) {
+			vo.setUrl(vo.getPath());
+		}else {
+			vo.setUrl(domain+vo.getPath());
+		}
+		
 		return vo;
 	}
 	
 
+	/**
+	 * 上传文件
+	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param inputStream 要上传的文件的数据流
+	 * @param fileSuffix 上传的文件的后缀名
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadFile(String filePath, InputStream inputStream, String fileSuffix) {
+		UploadFileVO vo = new UploadFileVO();
+		
+		if(!isAllowUpload(fileSuffix)){
+			vo.setBaseVO(UploadFileVO.FAILURE, "此后缀名不在可上传文件列表中");
+			return vo;
+		}
+		
+		if(inputStream == null){
+			vo.setBaseVO(UploadFileVO.FAILURE, "上传文件不存在，请选择要上传的文件");
+			return vo;
+		}
+		
+		return uploadFile(filePath, "."+fileSuffix, inputStream);
+	}
+	
+
+	/**
+	 * 上传文件
+	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param fileName 上传的文件名，如“xnx3.jar”；主要拿里面的后缀名。也可以直接传入文件的后缀名如“.jar。新的文件名会是自动生成的 uuid+后缀”
+	 * @param inputStream {@link InputStream}
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public UploadFileVO uploadFile(String filePath,String fileName,InputStream inputStream){
+		UploadFileVO vo = new UploadFileVO();
+		
+		//进行文件后缀校验
+		if(fileName == null || fileName.indexOf(".") == -1){
+			vo.setBaseVO(UploadFileVO.FAILURE, "上传的文件名(后缀)校验失败！传入的为："+fileName+"，允许传入的值如：a.jpg或.jpg");
+			return vo;
+		}
+		
+		String fileSuffix = StringUtil.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
+		String name=Lang.uuid()+"."+fileSuffix;
+		String path = filePath+name;
+		return uploadFile(path, inputStream);
+	}
+	
+	/**
+	 * 上传图片文件
+	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param inputStream 图片的数据流
+	 * @param fileSuffix 图片的后缀名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadImage(String filePath, InputStream inputStream, String fileSuffix, int maxWidth) {
+		UploadFileVO vo = new UploadFileVO();
+
+		if(!isAllowUpload(fileSuffix)){
+			vo.setBaseVO(UploadFileVO.FAILURE, "此后缀名不在可上传文件列表中");
+			return vo;
+		}
+		
+		if(inputStream == null){
+			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
+			return vo;
+		}
+		
+		//判断其是否进行图像压缩
+		if(maxWidth > 0){
+			inputStream = ImageUtil.proportionZoom(inputStream, maxWidth, fileSuffix);
+		}
+		
+		return uploadFile(filePath, "."+fileSuffix, inputStream);
+	}
+	
 	/**
 	 * 上传图片，将网上的图片复制到自己这里。（如果网上图片的URL获取不到后缀，默认用 jpg）
 	 * @param filePath 上传后的文件所在的目录、路径。 传入格式如： file/images/  会自动给上传的图片重命名保存
@@ -418,79 +516,6 @@ public class FileUpload{
 		getstorage().copyFile(originalFilePath, newFilePath);
 	}
 	
-	/**
-	 * 上传文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
-	 * @param inputStream 要上传的文件的数据流
-	 * @param fileSuffix 上传的文件的后缀名
-	 * @return {@link UploadFileVO}
-	 */
-	public UploadFileVO uploadFile(String filePath, InputStream inputStream, String fileSuffix) {
-		UploadFileVO vo = new UploadFileVO();
-		
-		if(!allowUploadSuffix(fileSuffix)){
-			vo.setBaseVO(UploadFileVO.FAILURE, "此后缀名不在可上传文件列表中");
-			return vo;
-		}
-		
-		if(inputStream == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, "上传文件不存在，请选择要上传的文件");
-			return vo;
-		}
-		
-		return uploadFile(filePath, "."+fileSuffix, inputStream);
-	}
-	
-	/**
-	 * 上传图片文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
-	 * @param inputStream 图片的数据流
-	 * @param fileSuffix 图片的后缀名
-	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度
-	 * @return {@link UploadFileVO}
-	 */
-	public UploadFileVO uploadImage(String filePath, InputStream inputStream, String fileSuffix, int maxWidth) {
-		UploadFileVO vo = new UploadFileVO();
-
-		if(!allowUploadSuffix(fileSuffix)){
-			vo.setBaseVO(UploadFileVO.FAILURE, "此后缀名不在可上传文件列表中");
-			return vo;
-		}
-		
-		if(inputStream == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
-			return vo;
-		}
-		
-		//判断其是否进行图像压缩
-		if(maxWidth > 0){
-			inputStream = ImageUtil.proportionZoom(inputStream, maxWidth, fileSuffix);
-		}
-		
-		return uploadFile(filePath, "."+fileSuffix, inputStream);
-	}
-	
-	/**
-	 * 上传文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
-	 * @param fileName 上传的文件名，如“xnx3.jar”；主要拿里面的后缀名。也可以直接传入文件的后缀名如“.jar。新的文件名会是自动生成的 uuid+后缀”
-	 * @param inputStream {@link InputStream}
-	 * @return {@link PutResult} 若失败，返回null
-	 */
-	public UploadFileVO uploadFile(String filePath,String fileName,InputStream inputStream){
-		UploadFileVO vo = new UploadFileVO();
-		
-		//进行文件后缀校验
-		if(fileName == null || fileName.indexOf(".") == -1){
-			vo.setBaseVO(UploadFileVO.FAILURE, "上传的文件名(后缀)校验失败！传入的为："+fileName+"，允许传入的值如：a.jpg或.jpg");
-			return vo;
-		}
-		
-		String fileSuffix = StringUtil.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
-		String name=Lang.uuid()+"."+fileSuffix;
-		String path = filePath+name;
-		return uploadFile(path, inputStream);
-	}
 	
 	/**
 	 * 获取某个目录（文件夹）占用空间的大小
@@ -528,4 +553,8 @@ public class FileUpload{
 		getstorage().createFolder(path);
 	}
 	
+	public static void main(String[] args) {
+		FileUpload file = new FileUpload();
+		System.out.println(file.isStorage(LocalStorage.class));
+	}
 }

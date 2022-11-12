@@ -27,7 +27,6 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 /**
  * 华为云OBS对象存储系统操作类
  */
-@SuppressWarnings("deprecation")
 public class OBSHandler {
 	
 	private String accessKeyId;		// 华为云的 Access Key Id

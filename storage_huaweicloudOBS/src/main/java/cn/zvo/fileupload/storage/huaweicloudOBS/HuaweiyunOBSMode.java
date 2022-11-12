@@ -16,7 +16,7 @@ import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
- * 附件上传之 华为云 OBS 
+ * 文件上传之 华为云 OBS 
  * @author 管雷鸣
  *
  */
@@ -25,17 +25,16 @@ public class HuaweiyunOBSMode implements StorageInterface {
 	public String obsBucketName;		// 当前进行操作桶的名称
 	
 	/**
-	 * 
-	 * @param key 
-	 * @param secret
-	 * @param endpoint
-	 * @param obsname
-	 * @param netUrl
+	 * 文件上传-华为云OBS
+	 * @param key 华为云的 Access Key Id
+	 * @param secret 华为云的 Access Key Secret
+	 * @param endpoint 华为云连接的地址节点
+	 * @param obsname 桶的名称
 	 */
-	public HuaweiyunOBSMode(String key, String secret, String endpoint, String obsname, String netUrl) {
+	public HuaweiyunOBSMode(String key, String secret, String endpoint, String obsname) {
 		obsHandler = new OBSHandler(key,secret,endpoint);
 		// 如果设置过CDN的路径测设置为CDN路径，没有设置则为桶原生的访问路径
-		obsHandler.setUrlForCDN(netUrl);
+//		obsHandler.setUrlForCDN(netUrl);
 		// 在数据库中读取进行操作的桶的明恒
 		obsHandler.setObsBucketName(obsname);
 		// 对桶名称进行当前类内缓存

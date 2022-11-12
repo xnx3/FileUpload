@@ -14,31 +14,31 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 public interface StorageInterface {
 
 	/**
-	 * 上传文件。上传后的文件名固定
-	 * @param path 上传到哪里，包含上传后的文件名，如"image/head/123.jpg"
+	 * 上传文件
+	 * @param path 上传到哪里，这里是相对路径。要包含上传后的文件名，如 site/123/index.html
 	 * @param inputStream 文件
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO uploadFile(String path,InputStream inputStream);
 	
 	/**
-	 * 传入一个路径，得到其 {@link InputStream} 
+	 * 通过路径，得到其文件数据 {@link InputStream} 
 	 * <br/> 注意，像是一些稍大的文件，比如几百MB的，不建议通过此方式取
-	 * @param path 要获取的文本内容的路径，如  site/123/index.html
+	 * @param path 要获取的文件的路径，如  site/123/index.html
 	 * @return 返回文件数据。若找不到，或出错，则返回 null
 	 */
 	public InputStream getFile(String path);
 	
 	/**
 	 * 删除文件
-	 * @param filePath 文件所在的路径，如 "jar/file/xnx3.jpg"
+	 * @param path 要删除的文件的路径，如 site/123/index.html
 	 * @return 执行成功，则 {@link BaseVO#getResult()} 为 {@link BaseVO#SUCCESS} 。注意，如果删除文件时，文件不存在，那接口实现时也要返回成功，因为使用者执行了这个方法后，最终结果是文件确实没了
 	 */
-	public BaseVO deleteFile(String filePath);
+	public BaseVO deleteFile(String path);
 	
 	/**
 	 * 获取某个目录（文件夹）占用空间的大小。如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
-	 * @param path 要计算的目录(文件夹)，如 jar/file/
+	 * @param path 要计算的目录(文件夹)，如 site/123/
 	 * @return 计算出来的大小。单位：字节，B。  ( 1000B = 1KB )
 	 */
 	public long getDirectorySize(String path);
@@ -60,15 +60,16 @@ public interface StorageInterface {
 	
 	/**
 	 * 获取某个文件的大小，这个是文件，如果传入文件夹，是不起作用的，会返回-1，文件未发现。
-	 * <br/>。如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
-	 * @param path 要获取的是哪个文件。传入如 site/219/1.html
+	 * <br/>如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
+	 * @param path 要获取的是哪个文件。传入如 site/219/index.html
 	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
 	 */
 	public long getFileSize(String path);
 	
 	/**
 	 * 创建文件夹
-	 * @param path 要创建的文件路径，传入如 site/219/test/ 则是创建 test 文件夹
+	 * <br/>如果你本身项目中用不到，这里可以直接返回成功 {@link BaseVO#success()} 无需具体实现
+	 * @param path 要创建的文件路径，传入如 site/219/ 则是创建 test 文件夹
 	 */
 	public BaseVO createFolder(String path);
 }
