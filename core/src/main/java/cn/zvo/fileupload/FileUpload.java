@@ -14,7 +14,7 @@ import com.xnx3.Lang;
 import com.xnx3.Log;
 import com.xnx3.StringUtil;
 import cn.zvo.fileupload.bean.SubFileBean;
-import cn.zvo.fileupload.storage.LocalStorage;
+import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.*;
 import com.xnx3.media.ImageUtil;
 
@@ -26,6 +26,10 @@ import com.xnx3.media.ImageUtil;
 public class FileUpload{
 	public final static String UTF8="UTF-8";
 	public final static String GBK="GBK";
+	/**
+	 * 默认的允许上传的文件后缀，如果没有使用 {@link #setAllowUploadSuffix(String)} 设置允许上传的后缀，那默认就是使用这里的。凡是这里的，都允许上传
+	 */
+	public final static String DEFAULT_ALLOW_UPLOAD_SUFFIXS = "png|jpg|jpeg|gif|bmp|flv|swf|mkv|avi|rm|rmvb|mpeg|mpg|ogg|ogv|mov|wmv|mp4|webm|mp3|wav|mid|rar|zip|tar|gz|7z|bz2|cab|iso|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|md|xml";
 	
 	//允许上传的文件最大是多大，比如3MB 单位使 KB、MB
 	private String maxFileSize;	 
@@ -50,7 +54,7 @@ public class FileUpload{
 	}
 
 	/**
-	 * 设置当前的netUrl
+	 * 设置上传后文件所访问URL的域名
 	 * @param domain 当前正在使用的附件的域名，传入如： http://xxxx.com/  注意格式，后面以 / 结尾
 	 */
 	public void setDomain(String domain){
@@ -258,8 +262,10 @@ public class FileUpload{
 		
 		//判断是否设置允许上传什么后缀
 		if(allowUploadSuffixs == null || allowUploadSuffixs.length == 0){
-			Log.error("请先使用 fileUpload.setAllowUploadSuffix(\"jpg|png|txt|zip\"); 方法设置哪些后缀允许上传");
-			return false;
+			//还未设置，那默认使用 DEFAULT_ALLOW_UPLOAD_SUFFIXS 
+			setAllowUploadSuffix(DEFAULT_ALLOW_UPLOAD_SUFFIXS);
+//			Log.error("请先使用 fileUpload.setAllowUploadSuffix(\"jpg|png|txt|zip\"); 方法设置哪些后缀允许上传");
+			//return false;
 		}
 		
 		//进行判断，判断传入的suffix是否在允许上传的后缀里面
@@ -553,8 +559,4 @@ public class FileUpload{
 		getstorage().createFolder(path);
 	}
 	
-	public static void main(String[] args) {
-		FileUpload file = new FileUpload();
-		System.out.println(file.isStorage(LocalStorage.class));
-	}
 }

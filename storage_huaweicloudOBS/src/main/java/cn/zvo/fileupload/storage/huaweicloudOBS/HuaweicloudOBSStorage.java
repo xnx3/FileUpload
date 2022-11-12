@@ -20,7 +20,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  * @author 管雷鸣
  *
  */
-public class HuaweiyunOBSMode implements StorageInterface {
+public class HuaweicloudOBSStorage implements StorageInterface {
 	public OBSHandler obsHandler;	//禁用，通过getObsUtil() 获取
 	public String obsBucketName;		// 当前进行操作桶的名称
 	
@@ -31,7 +31,7 @@ public class HuaweiyunOBSMode implements StorageInterface {
 	 * @param endpoint 华为云连接的地址节点
 	 * @param obsname 桶的名称
 	 */
-	public HuaweiyunOBSMode(String key, String secret, String endpoint, String obsname) {
+	public HuaweicloudOBSStorage(String key, String secret, String endpoint, String obsname) {
 		obsHandler = new OBSHandler(key,secret,endpoint);
 		// 如果设置过CDN的路径测设置为CDN路径，没有设置则为桶原生的访问路径
 //		obsHandler.setUrlForCDN(netUrl);

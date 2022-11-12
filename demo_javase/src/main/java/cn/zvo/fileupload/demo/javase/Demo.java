@@ -1,7 +1,7 @@
 package cn.zvo.fileupload.demo.javase;
 
 import cn.zvo.fileupload.FileUpload;
-import cn.zvo.fileupload.storage.LocalStorage;
+import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
@@ -27,6 +27,7 @@ public class Demo {
 		//设置允许上传的文件大小
 		fileUpload.setMaxFileSize("10MB");
 		
+		//这里上传一个文本文件，文本文件的内容是 123456 ，将他保存到 abc 目录下的 1.txt 文件
 		UploadFileVO vo = fileUpload.uploadStringFile("abc/1.txt", "123456");
 		System.out.println(vo);
 	}

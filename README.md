@@ -1,4 +1,6 @@
-# 文件操作，如文件上传
+# 文件上传
+
+![](http://res.zvo.cn/fileupload/framework.png)
 
 ## 场景：普通Java项目
 也就是普通javase的项目使用

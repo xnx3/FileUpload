@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.storage;
+package cn.zvo.fileupload.storage.local;
 
 import java.io.File;
 import java.io.FileInputStream;

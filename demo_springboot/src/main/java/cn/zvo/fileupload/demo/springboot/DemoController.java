@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import cn.zvo.fileupload.framework.springboot.FileUpload;
-import cn.zvo.fileupload.storage.LocalStorage;
+import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
