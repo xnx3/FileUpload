@@ -3,24 +3,33 @@
 <head>
 	<title>演示文件上传DEMO</title>
 	<meta charset="utf-8">
+	<!-- 文件上传，开源地址 https://github.com/xnx3/request -->
 	<script src="http://res.zvo.cn/request/request.js"></script>
+	<!-- 消息提醒，开源地址 https://gitee.com/mail_osc/msg -->
 	<script src="http://res.zvo.cn/msg/msg.js"></script>
 </head>
 <body>
 
-选择要上传的文件：<br/>
+选择要上传的文件（可以传个图片试试）：<br/>
 <input type="file" name="file"/>
 <button onclick="upload();">上传</button>
 
 <script>
+/*
+ * 进行文件上传操作
+ */
 function upload(){
 	//要上传的文件
 	var file = document.getElementsByName('file')[0].files[0];	
 	//执行上传操作
 	request.upload('/upload.json', {}, file, function(data){ 
+		console.log(data);	//控制台打印相关信息
+		
 		if(data.result == '1'){
-			//上传成功，成功提醒
-			msg.success('上传成功！图片：'+data.url);
+			//上传成功，提醒一下，然后打开上传成功的文件
+			msg.success('上传成功！', function(){
+				window.location.href = data.url;
+			});
 		}else{
 			//上传出错，则弹出失败提示
 			msg.failure(data.info);

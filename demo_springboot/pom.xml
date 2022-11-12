@@ -7,7 +7,7 @@
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>demo.springboot</artifactId>
 	<version>1.0</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,5 +46,4 @@
 			<version>1.0</version>
 		</dependency> 
 	</dependencies>
-
 </project>

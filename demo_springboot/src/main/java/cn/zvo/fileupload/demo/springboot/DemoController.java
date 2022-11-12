@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.xnx3.FileUtil;
-import com.xnx3.StringUtil;
-
 import cn.zvo.fileupload.framework.springboot.FileUpload;
+import cn.zvo.fileupload.storage.LocalStorage;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
+/**
+ * 文件上传的demo演示
+ * @author 管雷鸣
+ */
 @Controller
 @RequestMapping("/")
 public class DemoController{
@@ -31,8 +32,16 @@ public class DemoController{
 		//设置允许上传的文件大小
 		fileUpload.setMaxFileSize("2MB");
 		
-		//将图片上传到 file/images/ 路径下
-		UploadFileVO vo = fileUpload.uploadImage("file/images/", multipartFile);
+		/*
+		 * 设置使用本地存储的方式。并将上传的文件存储到 static 目录下
+		 * 如果不使用 fileUpload.setStorage(...) 设置存储方式，那默认使用的便是本地存储，文件存储到当前项目的根路径下
+		 */
+		LocalStorage localStorage = new LocalStorage();
+		localStorage.setLocalFilePath(localStorage.getLocalFilePath()+"static/");
+		fileUpload.setStorage(localStorage);
+		
+		//将图片上传到 upload/images/ 文件夹中
+		UploadFileVO vo = fileUpload.uploadImage("upload/images/", multipartFile);
 		return vo;
 	}
 	

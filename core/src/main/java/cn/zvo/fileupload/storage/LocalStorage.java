@@ -27,6 +27,10 @@ public class LocalStorage implements StorageInterface{
 	//附件保存在当前服务器上，保存的路径是哪个? 如果不设置，默认是保存到当前项目的根路径下
 	private String localFilePath;
 	
+	/**
+	 * 获取本地上传的文件，是存放在磁盘的哪个路径下
+	 * @return 获取到的格式如 D:/fileupload/
+	 */
 	public String getLocalFilePath() {
 		if(localFilePath == null) {
 			String path = this.getClass().getResource("/").getPath();
@@ -37,7 +41,7 @@ public class LocalStorage implements StorageInterface{
 	
 	/**
 	 * 设置本地存储的文件，是存放在哪个路径
-	 * @param localFilePath 要存放在哪个路径，传入如： ""
+	 * @param localFilePath 要存放在哪个路径，传入如： "D:/fileupload/"
 	 */
 	public void setLocalFilePath(String localFilePath) {
 		this.localFilePath = localFilePath;
