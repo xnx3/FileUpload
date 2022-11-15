@@ -27,7 +27,7 @@ public class Demo {
 		//fileUpload.setDomain("http://cdn.yourdomain.com/");  //还可设置OBS绑定的域名或CDN加速域名，不设置默认返回的是obs桶自带域名的文件url
 
 		/**** 上传，这里上传一个文本文件，内容是 123456 ，将他保存到 桶 abc 目录下的 1.txt 文件 ****/
-		UploadFileVO vo = fileUpload.uploadStringFile("abc/1.txt", "123456");
+		UploadFileVO vo = fileUpload.uploadString("abc/1.txt", "123456");
 		System.out.println(vo);	//打印结果
 	}
 	

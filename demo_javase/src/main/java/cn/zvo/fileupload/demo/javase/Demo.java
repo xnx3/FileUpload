@@ -28,7 +28,7 @@ public class Demo {
 		fileUpload.setMaxFileSize("10MB");
 		
 		//这里上传一个文本文件，文本文件的内容是 123456 ，将他保存到 abc 目录下的 1.txt 文件
-		UploadFileVO vo = fileUpload.uploadStringFile("abc/1.txt", "123456");
+		UploadFileVO vo = fileUpload.uploadString("abc/1.txt", "123456");
 		System.out.println(vo);
 	}
 }

@@ -56,19 +56,19 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	 * @return {@link com.xnx3.j2ee.vo.UploadFileVO} result 1: 成功；0 失败。
 	 */
 	@Override
-	public UploadFileVO uploadFile(String path, InputStream inputStream) {
+	public UploadFileVO upload(String path, InputStream inputStream) {
 		UploadFileVO vo = getObsHander().putFileByStream(obsBucketName, path, inputStream);
 		return vo;
 	}
 
 	/**
 	 * 删除文件
-	 * @param filePath 需要删除的文件路径加名称 例："site/1.sh"
+	 * @param path 需要删除的文件路径加名称 例："site/219/index.html"
 	 * @return {@link BaseVO}
 	 */
 	@Override
-	public BaseVO deleteFile(String filePath) {
-		DeleteObjectResult result = getObsHander().deleteObject(obsBucketName, filePath);
+	public BaseVO delete(String path) {
+		DeleteObjectResult result = getObsHander().deleteObject(obsBucketName, path);
 		
 		//成功
 		if(result.getStatusCode() == 200) {
@@ -76,16 +76,6 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 		}else {
 			return BaseVO.failure("failure, code:"+result.getStatusCode()+", obs requestId:"+result.getRequestId());
 		}
-	}
-	
-	/**
-	 * 获得指定路径下的对象个数
-	 * @param path 指定查询的文件夹路径 例：“site/”
-	 * @return 
-	 */
-	@Override
-	public long getDirectorySize(String path) {
-		return getObsHander().getFolderObjectsSize(obsBucketName, path);
 	}
 	
 	/**
@@ -132,13 +122,23 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	}
 
 	@Override
-	public long getFileSize(String path) {
-		com.obs.services.model.ObjectMetadata metadata = getObsHander().getObsClient().getObjectMetadata(obsBucketName, path);
-		if(metadata == null){
-			return 0;
+	public long getSize(String path) {
+		if(path == null) {
+			return -1;
 		}
 		
-		return metadata.getContentLength();
+		if((path.lastIndexOf("/") +1 ) == path.length()) {
+			//是目录
+			return getObsHander().getFolderObjectsSize(obsBucketName, path);
+		}else {
+			//是文件
+			com.obs.services.model.ObjectMetadata metadata = getObsHander().getObsClient().getObjectMetadata(obsBucketName, path);
+			if(metadata == null){
+				return -1;
+			}
+			
+			return metadata.getContentLength();
+		}
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	}
 
 	@Override
-	public InputStream getFile(String path) {
+	public InputStream get(String path) {
 		String content = null;
 		byte[] bytes = null;
 		try {

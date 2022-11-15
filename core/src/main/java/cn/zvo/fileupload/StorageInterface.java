@@ -19,7 +19,7 @@ public interface StorageInterface {
 	 * @param inputStream 文件
 	 * @return {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadFile(String path,InputStream inputStream);
+	public UploadFileVO upload(String path,InputStream inputStream);
 	
 	/**
 	 * 通过路径，得到其文件数据 {@link InputStream} 
@@ -27,22 +27,15 @@ public interface StorageInterface {
 	 * @param path 要获取的文件的路径，如  site/123/index.html
 	 * @return 返回文件数据。若找不到，或出错，则返回 null
 	 */
-	public InputStream getFile(String path);
+	public InputStream get(String path);
 	
 	/**
 	 * 删除文件
 	 * @param path 要删除的文件的路径，如 site/123/index.html
 	 * @return 执行成功，则 {@link BaseVO#getResult()} 为 {@link BaseVO#SUCCESS} 。注意，如果删除文件时，文件不存在，那接口实现时也要返回成功，因为使用者执行了这个方法后，最终结果是文件确实没了
 	 */
-	public BaseVO deleteFile(String path);
-	
-	/**
-	 * 获取某个目录（文件夹）占用空间的大小。如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
-	 * @param path 要计算的目录(文件夹)，如 site/123/
-	 * @return 计算出来的大小。单位：字节，B。  ( 1000B = 1KB )
-	 */
-	public long getDirectorySize(String path);
-	
+	public BaseVO delete(String path);
+
 	/**
 	 * 复制文件 。如果你本身项目中用不到，这里可以无需具体实现
 	 * @param originalFilePath 原本文件所在的路径(相对路径，非绝对路径，操作的是当前附件文件目录下)
@@ -59,12 +52,17 @@ public interface StorageInterface {
 	public List<SubFileBean> getSubFileList(String path);
 	
 	/**
-	 * 获取某个文件的大小，这个是文件，如果传入文件夹，是不起作用的，会返回-1，文件未发现。
+	 * 获取某个文件或文件夹的大小
 	 * <br/>如果你本身项目中用不到，这里可以直接返回个0，无需具体实现
-	 * @param path 要获取的是哪个文件。传入如 site/219/index.html
-	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
+	 * <br/>如果开发对接别的存储方式实现这个接口时，判断是否是目录，可以用 <pre>path.lastIndexOf("/") +1 ) == path.length()</pre>
+	 * @param path 要获取的是哪个文件/文件夹。传入方式有两种：
+	 * 	<ul>
+	 * 		<li>如果获取的是文件夹占用的空间大小，传入的则是如 site/123/ 以/结尾，表示获取这个文件夹(目录)所占用的空间大小</li>
+	 * 		<li>如果获取的是具体某个文件占用的空间大小，传入的则是如 site/219/index.html 传入的是具体文件路径</li>
+	 * </ul>
+	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件/文件夹 不存在
 	 */
-	public long getFileSize(String path);
+	public long getSize(String path);
 	
 	/**
 	 * 创建文件夹

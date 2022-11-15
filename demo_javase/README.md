@@ -18,7 +18,7 @@
 ````
 FileUpload fileUpload = new FileUpload();
 //这里上传一个文本文件，文本文件的内容是 123456 ，将他保存到 abc 目录下的 1.txt 文件
-UploadFileVO vo = fileUpload.uploadStringFile("abc/1.txt", "123456");
+UploadFileVO vo = fileUpload.uploadString("abc/1.txt", "123456");
 //输出到控制台，看看结果
 System.out.println(vo);
 ````
@@ -35,7 +35,7 @@ fileUpload.setStorage(...);
 //设置上传后文件所访问URL的域名，当文件上传完成后，会通过 UploadFileVO.url 返回文件访问的URL
 fileUpload.setDomain("http://res.zvo.cn/");
 //这里上传一个文本文件，文本文件的内容是 123456 ，将他保存到 abc 目录下的 1.txt 文件
-UploadFileVO vo = fileUpload.uploadStringFile("abc/1.txt", "123456");
+UploadFileVO vo = fileUpload.uploadString("abc/1.txt", "123456");
 //输出到控制台，看看结果
 System.out.println(vo);
 ````

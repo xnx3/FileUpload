@@ -281,15 +281,15 @@ public class FileUpload{
 	
 	/**
 	 * 给出文本内容，写出文件
-	 * @param filePath 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
 	 * @param text 文本内容
 	 * @param encode 编码格式，可传入 {@link FileUpload#GBK}、{@link FileUpload#UTF8}
 	 * @return  {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadStringFile(String filePath, String text, String encode){
+	public UploadFileVO uploadString(String path, String text, String encode){
 		try {
 			InputStream inputStream = StringUtil.stringToInputStream(text, encode);
-			return uploadFile(filePath, inputStream);
+			return upload(path, inputStream);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			UploadFileVO vo = new UploadFileVO();
@@ -300,32 +300,32 @@ public class FileUpload{
 	
 	/**
 	 * 给出文本内容，写出文件。写出UTF－8编码
-	 * @param filePath 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
 	 * @param text 文本内容
 	 */
-	public UploadFileVO uploadStringFile(String filePath, String text){
-		return uploadStringFile(filePath, text, com.xnx3.FileUtil.UTF8);
+	public UploadFileVO uploadString(String path, String text){
+		return uploadString(path, text, com.xnx3.FileUtil.UTF8);
 	}
 	
 	
 	/**
 	 * 上传本地文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param localPath 本地要上传的文件的绝对路径，如 "/jar_file/iw.jar"
 	 * @return {@link PutResult} 若失败，返回null
 	 */
-	public UploadFileVO uploadFile(String filePath, String localPath){
+	public UploadFileVO upload(String path, String localPath){
 		File localFile = new File(localPath);
-		return uploadFile(filePath, localFile);
+		return upload(path, localFile);
 	}
 	
 	/**
 	 * 上传本地文件。上传的文件名会被自动重命名为uuid+后缀
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param localFile 本地要上传的文件
 	 * @return {@link PutResult} 若失败，返回null
 	 */
-	public UploadFileVO uploadFile(String filePath, File localFile){
+	public UploadFileVO upload(String path, File localFile){
 		UploadFileVO vo = new UploadFileVO();
 		
 		BaseVO baseVO = verifyFileMaxLength(localFile);
@@ -337,7 +337,7 @@ public class FileUpload{
 		//将本地文件转化为流
 		try {
 			InputStream localInput = new FileInputStream(localFile);
-			return uploadFile(filePath, localInput);
+			return upload(path, localInput);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			vo.setBaseVO(UploadFileVO.FAILURE, "上传出错，要上传的文件不存在！");
@@ -352,7 +352,7 @@ public class FileUpload{
 	 * @param inputStream 文件
 	 * @return {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadFile(String path,InputStream inputStream){
+	public UploadFileVO upload(String path,InputStream inputStream){
 		UploadFileVO vo = new UploadFileVO();
 		
 		/** 判断存储出去的后缀是否合规 **/
@@ -376,7 +376,7 @@ public class FileUpload{
 		vo.setSize(lengthKB);
 		
 		//执行上传
-		vo = getstorage().uploadFile(path, inputStream);
+		vo = getstorage().upload(path, inputStream);
 		if(vo.getSize() < 1) {
 			vo.setSize(lengthKB);
 		}
@@ -395,12 +395,12 @@ public class FileUpload{
 
 	/**
 	 * 上传文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param inputStream 要上传的文件的数据流
 	 * @param fileSuffix 上传的文件的后缀名
 	 * @return {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadFile(String filePath, InputStream inputStream, String fileSuffix) {
+	public UploadFileVO upload(String path, InputStream inputStream, String fileSuffix) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		if(!isAllowUpload(fileSuffix)){
@@ -413,18 +413,18 @@ public class FileUpload{
 			return vo;
 		}
 		
-		return uploadFile(filePath, "."+fileSuffix, inputStream);
+		return upload(path, "."+fileSuffix, inputStream);
 	}
 	
 
 	/**
 	 * 上传文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param fileName 上传的文件名，如“xnx3.jar”；主要拿里面的后缀名。也可以直接传入文件的后缀名如“.jar。新的文件名会是自动生成的 uuid+后缀”
 	 * @param inputStream {@link InputStream}
 	 * @return {@link PutResult} 若失败，返回null
 	 */
-	public UploadFileVO uploadFile(String filePath,String fileName,InputStream inputStream){
+	public UploadFileVO upload(String path,String fileName,InputStream inputStream){
 		UploadFileVO vo = new UploadFileVO();
 		
 		//进行文件后缀校验
@@ -435,19 +435,18 @@ public class FileUpload{
 		
 		String fileSuffix = StringUtil.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
 		String name=Lang.uuid()+"."+fileSuffix;
-		String path = filePath+name;
-		return uploadFile(path, inputStream);
+		return upload(path+name, inputStream);
 	}
 	
 	/**
 	 * 上传图片文件
-	 * @param filePath 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param inputStream 图片的数据流
 	 * @param fileSuffix 图片的后缀名
 	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度
 	 * @return {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadImage(String filePath, InputStream inputStream, String fileSuffix, int maxWidth) {
+	public UploadFileVO uploadImage(String path, InputStream inputStream, String fileSuffix, int maxWidth) {
 		UploadFileVO vo = new UploadFileVO();
 
 		if(!isAllowUpload(fileSuffix)){
@@ -465,16 +464,16 @@ public class FileUpload{
 			inputStream = ImageUtil.proportionZoom(inputStream, maxWidth, fileSuffix);
 		}
 		
-		return uploadFile(filePath, "."+fileSuffix, inputStream);
+		return upload(path, "."+fileSuffix, inputStream);
 	}
 	
 	/**
 	 * 上传图片，将网上的图片复制到自己这里。（如果网上图片的URL获取不到后缀，默认用 jpg）
-	 * @param filePath 上传后的文件所在的目录、路径。 传入格式如： file/images/  会自动给上传的图片重命名保存
+	 * @param path 上传后的文件所在的目录、路径。 传入格式如： file/images/  会自动给上传的图片重命名保存
 	 * @param imageUrl 网上图片的地址
 	 * @return {@link UploadFileVO}
 	 */
-	public UploadFileVO uploadImage(String filePath, String imageUrl){
+	public UploadFileVO uploadImage(String path, String imageUrl){
 		if(imageUrl == null){
 			return null;
 		}
@@ -484,7 +483,7 @@ public class FileUpload{
 			suffix = "jpg";
 		}
 		
-		return uploadFile(filePath+Lang.uuid()+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
+		return upload(path+Lang.uuid()+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
 	}
 	
 	/**
@@ -493,7 +492,7 @@ public class FileUpload{
 	 * @return 返回其文本内容。若找不到，或出错，则返回 null
 	 */
 	public String getText(String path){
-		InputStream is = getstorage().getFile(path);
+		InputStream is = getstorage().get(path);
 		if(is == null) {
 			return null;
 		}
@@ -509,10 +508,10 @@ public class FileUpload{
 	
 	/**
 	 * 删除文件
-	 * @param filePath 文件所在的路径，如 "jar/file/xnx3.jpg"
+	 * @param path 文件所在的路径，如 "jar/file/xnx3.jpg"
 	 */
-	public void deleteFile(String filePath){
-		getstorage().deleteFile(filePath);
+	public void delete(String path){
+		getstorage().delete(path);
 	}
 	
 	/**
@@ -520,7 +519,7 @@ public class FileUpload{
 	 * @param originalFilePath 原本文件所在的路径(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 * @param newFilePath 复制的文件所在的路径，所放的路径。(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 */
-	public void copyFile(String originalFilePath, String newFilePath){
+	public void copy(String originalFilePath, String newFilePath){
 		getstorage().copyFile(originalFilePath, newFilePath);
 	}
 	
@@ -531,7 +530,16 @@ public class FileUpload{
 	 * @return 计算出来的大小。单位：字节，B。  千分之一KB
 	 */
 	public long getDirectorySize(String path){
-		return getstorage().getDirectorySize(path);
+		return getstorage().getSize(path);
+	}
+	
+	/**
+	 * 获取某个文件的大小，这个是文件，如果传入文件夹，是不起作用的，会返回-1，文件未发现
+	 * @param path 要获取的是哪个文件。传入如 site/219/1.html
+	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
+	 */
+	public long getFileSize(String path){
+		return getstorage().getSize(path);
 	}
 	
 	/**
@@ -544,15 +552,6 @@ public class FileUpload{
 	}
 	
 
-	/**
-	 * 获取某个文件的大小，这个是文件，如果传入文件夹，是不起作用的，会返回-1，文件未发现
-	 * @param path 要获取的是哪个文件。传入如 site/219/1.html
-	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
-	 */
-	public long getFileSize(String path){
-		return getstorage().getFileSize(path);
-	}
-	
 	/**
 	 * 创建文件夹
 	 * @param path 要创建的文件路径，传入如 site/219/test/ 则是创建 test 文件夹

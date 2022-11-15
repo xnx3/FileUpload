@@ -21,7 +21,7 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传文件，会自动转化为{@link MultipartFile}保存
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
-	public UploadFileVO uploadFile(String path, MultipartFile multipartFile) {
+	public UploadFileVO upload(String path, MultipartFile multipartFile) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		if(multipartFile == null){
@@ -40,7 +40,7 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 			return vo;
 		}
 		
-		vo = uploadFile(path, inputStream);
+		vo = upload(path, inputStream);
 		return vo;
 	}
 	
@@ -127,14 +127,14 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @param formFileName form表单上传的单个文件，表单里上传文件的文件名
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
-	public UploadFileVO uploadFile(String path,HttpServletRequest request,String formFileName) {
+	public UploadFileVO upload(String path,HttpServletRequest request,String formFileName) {
 		UploadFileVO uploadFileVO = new UploadFileVO();
 		if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			List<MultipartFile> list = multipartRequest.getFiles(formFileName);
 			if(list.size()>0 && !list.get(0).isEmpty()){
 				MultipartFile multi = list.get(0);
-				uploadFileVO = uploadFile(path, multi);
+				uploadFileVO = upload(path, multi);
 			}else{
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
 				uploadFileVO.setInfo("请选择要上传的文件");

@@ -48,7 +48,7 @@ public class LocalStorage implements StorageInterface{
 	}
 
 	@Override
-	public UploadFileVO uploadFile(String path, InputStream inputStream) {
+	public UploadFileVO upload(String path, InputStream inputStream) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		directoryInit(path);
@@ -76,9 +76,9 @@ public class LocalStorage implements StorageInterface{
 	}
 
 	@Override
-	public BaseVO deleteFile(String filePath) {
+	public BaseVO delete(String path) {
 		try {
-			FileUtil.deleteFile(this.getLocalFilePath()+filePath);
+			FileUtil.deleteFile(this.getLocalFilePath()+path);
 			return BaseVO.success();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,11 +86,11 @@ public class LocalStorage implements StorageInterface{
 		}
 	}
 
-	@Override
-	public long getDirectorySize(String path) {
-		directoryInit(path);
-		return sizeOfDirectory(new File(this.getLocalFilePath()+path));
-	}
+//	@Override
+//	public long getDirectorySize(String path) {
+//		directoryInit(path);
+//		return sizeOfDirectory(new File(this.getLocalFilePath()+path));
+//	}
 
 	@Override
 	public void copyFile(String originalFilePath, String newFilePath) {
@@ -168,13 +168,21 @@ public class LocalStorage implements StorageInterface{
 	}
 
 	@Override
-	public long getFileSize(String path) {
+	public long getSize(String path) {
 		File file = new File(this.getLocalFilePath()+path);
 		if(!file.exists()){
 			//文件不存在
 			return -1;
 		}
-		return file.length();
+		
+		if(file.isDirectory()) {
+			//是目录，那获取这个目录的大小
+			directoryInit(path);
+			return sizeOfDirectory(new File(this.getLocalFilePath()+path));
+		}else {
+			//不是目录，那就是具体文件了，返回这个文件的大小
+			return file.length();
+		}
 	}
 
 	@Override
@@ -184,7 +192,7 @@ public class LocalStorage implements StorageInterface{
 	}
 	
 	@Override
-	public InputStream getFile(String path) {
+	public InputStream get(String path) {
 		File file = new File(this.getLocalFilePath()+path);
 		if(!file.exists()) {
 			return null;
