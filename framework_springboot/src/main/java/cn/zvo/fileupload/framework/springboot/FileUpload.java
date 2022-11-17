@@ -14,7 +14,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  * @author 管雷鸣
  */
 public class FileUpload extends cn.zvo.fileupload.FileUpload {
-
+	
 	/**
 	 * 上传文件
 	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"

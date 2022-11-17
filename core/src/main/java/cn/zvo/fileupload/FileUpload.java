@@ -195,7 +195,7 @@ public class FileUpload{
 	 * @param lengthKB 要上传的文件的大小，判断其大小是否超过系统指定的最大限制，单位是KB (1024B=1KB)
 	 * @return 若超出大小，则返回result:Failure ，info为出错原因
 	 */
-	public BaseVO verifyFileMaxLength(int lengthKB){
+	public BaseVO verifyFileMaxLength(long lengthKB){
 		BaseVO vo = new BaseVO();
 		if(getMaxFileSizeKB() > 0 && lengthKB > getMaxFileSizeKB()){
 			vo.setBaseVO(BaseVO.FAILURE, "文件大小超出限制！上传大小在 "+maxFileSize+" 以内");
@@ -340,17 +340,17 @@ public class FileUpload{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		BaseVO baseVO = verifyFileMaxLength(length_B);
+		BaseVO baseVO = verifyFileMaxLength((long) Math.ceil(length_B/1024));
 		if(baseVO.getResult() - BaseVO.FAILURE == 0){
 			vo.setBaseVO(baseVO);
 			return vo;
 		}
-		vo.setSize(lengthKB);
+		vo.setSize(length_B);
 		
 		//执行上传
 		vo = getstorage().upload(path, inputStream);
 		if(vo.getSize() < 1) {
-			vo.setSize(lengthKB);
+			vo.setSize(length_B);
 		}
 		
 		//设置网络下载地址

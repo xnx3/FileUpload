@@ -64,7 +64,7 @@ public class LocalStorage implements StorageInterface{
 			os.close();
 			inputStream.close();
 			
-			vo.setFileName(file.getName());
+			vo.setName(file.getName());
 			vo.setInfo("success");
 			vo.setPath(path);
 		} catch (IOException e) {

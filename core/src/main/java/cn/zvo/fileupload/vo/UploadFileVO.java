@@ -13,7 +13,7 @@ public class UploadFileVO extends BaseVO {
 	 */
 	public final static int NOTFILE=2;
 	
-	public String fileName;	//上传成功后的文件名，如 "xnx3.jar"
+	public String name;	//上传成功后的文件名，如 "xnx3.jar"
 	public String path;		//上传成功后的路径，如 "/jar/file/xnx3.jar"
 	public String url;			//文件上传成功后，外网访问的url
 	public long size;			//上传的文件的大小，单位 KB
@@ -28,23 +28,24 @@ public class UploadFileVO extends BaseVO {
 	 * @param path 上传成功后的路径，如 "/jar/file/xnx3.jar"
 	 * @param url 文件上传成功后，外网访问的url
 	 */
-	public UploadFileVO(String fileName,String path,String url) {
-		this.fileName = fileName;
+	public UploadFileVO(String name,String path,String url) {
+		this.name = name;
 		this.path = path;
 	}
+	
 	/**
 	 * 上传成功后的文件名，如 "xnx3.jar"
 	 * @return
 	 */
-	public String getFileName() {
-		return fileName;
+	public String getName() {
+		return name;
 	}
 	/**
 	 * 上传成功后的文件名，如 "xnx3.jar"
 	 * @param fileName
 	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	/**
 	 * 上传成功后的路径，如 "/jar/file/xnx3.jar"
@@ -83,9 +84,7 @@ public class UploadFileVO extends BaseVO {
 
 	@Override
 	public String toString() {
-		return "UploadFileVO [fileName=" + fileName + ", path=" + path
-				+ ", url=" + url + ", getResult()=" + getResult()
-				+ ", getInfo()=" + getInfo() + "]";
+		return "UploadFileVO [name=" + name + ", path=" + path + ", url=" + url + ", size=" + size + "]";
 	}
 	
 }

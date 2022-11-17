@@ -396,7 +396,7 @@ public class OBSHandler {
 	 * 将PutObjectResult封装为UploadFileVO但会返回
 	 * @author 管雷鸣修改
 	 * @param result 华为云文件上传返回的结果封装类
-	 * @return {@link com.xnx3.j2ee.vo.UploadFileVO} 经过封装的UploadFileVO类
+	 * @return {@link UploadFileVO} 经过封装的UploadFileVO类
 	 */
 	public UploadFileVO getUploadFileVO(PutObjectResult result) {
 		UploadFileVO vo = new UploadFileVO();
