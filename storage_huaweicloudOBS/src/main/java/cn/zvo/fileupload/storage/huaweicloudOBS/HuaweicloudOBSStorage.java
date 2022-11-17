@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.obs.services.model.DeleteObjectResult;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
@@ -26,13 +28,13 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 	
 	/**
 	 * 文件上传-华为云OBS
-	 * @param key 华为云的 Access Key Id
-	 * @param secret 华为云的 Access Key Secret
-	 * @param endpoint 华为云连接的地址节点，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
+	 * @param accessKeyId 华为云的 Access Key Id
+	 * @param accessKeySecret 华为云的 Access Key Secret
+	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
 	 * @param obsname 桶的名称
 	 */
-	public HuaweicloudOBSStorage(String key, String secret, String endpoint, String obsname) {
-		obsHandler = new OBSHandler(key,secret,endpoint);
+	public HuaweicloudOBSStorage(String accessKeyId, String accessKeySecret, String endpoint, String obsname) {
+		obsHandler = new OBSHandler(accessKeyId,accessKeySecret,endpoint);
 		// 如果设置过CDN的路径测设置为CDN路径，没有设置则为桶原生的访问路径
 //		obsHandler.setUrlForCDN(netUrl);
 		// 在数据库中读取进行操作的桶的明恒
@@ -40,6 +42,41 @@ public class HuaweicloudOBSStorage implements StorageInterface {
 		// 对桶名称进行当前类内缓存
 		obsBucketName = obsHandler.getObsBucketName();
 	}
+	
+
+	/**
+	 * 文件上传-华为云OBS
+	 * @param accessKeyId 华为云的 Access Key Id
+	 * @param accessKeySecret 华为云的 Access Key Secret
+	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
+	 * @param obsname 桶的名称
+	 */
+	public HuaweicloudOBSStorage(Map<String, String> map) {
+		String accessKeySecret = map.get("accessKeySecret");
+		String accessKeyId = map.get("accessKeyId");
+		String endpoint = map.get("endpoint");
+		String obsname = map.get("obsname");
+		
+		init(accessKeyId, accessKeySecret, endpoint, obsname);
+	}
+	
+	/**
+	 * 初始化这个类，以供构造方法调用
+	 * @param accessKeyId 华为云的 Access Key Id
+	 * @param accessKeySecret 华为云的 Access Key Secret
+	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
+	 * @param obsname 桶的名称
+	 */
+	private void init(String accessKeyId, String accessKeySecret, String endpoint, String obsname) {
+		obsHandler = new OBSHandler(accessKeyId,accessKeySecret,endpoint);
+		// 如果设置过CDN的路径测设置为CDN路径，没有设置则为桶原生的访问路径
+//		obsHandler.setUrlForCDN(netUrl);
+		// 在数据库中读取进行操作的桶的明恒
+		obsHandler.setObsBucketName(obsname);
+		// 对桶名称进行当前类内缓存
+		obsBucketName = obsHandler.getObsBucketName();
+	}
+	
 	
 	/**
 	 * 获取华为云OBS的操作类

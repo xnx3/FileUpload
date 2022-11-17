@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import cn.zvo.fileupload.framework.springboot.ApplicationConfig;
 import cn.zvo.fileupload.framework.springboot.FileUpload;
+import cn.zvo.fileupload.framework.springboot.FileUploadUtil;
 import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
@@ -17,6 +19,13 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 @Controller
 @RequestMapping("/")
 public class DemoController{
+	
+	
+	@RequestMapping(value="test")
+	@ResponseBody
+	public UploadFileVO test(){
+		return FileUploadUtil.uploadString("a/b.txt", "abcde");
+	}
 	
 	/**
 	 * 图片上传

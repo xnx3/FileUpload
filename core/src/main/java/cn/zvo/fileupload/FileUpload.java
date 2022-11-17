@@ -192,7 +192,7 @@ public class FileUpload{
 	
 	/**
 	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
-	 * @param lengthKB 要上传的文件的大小，判断其大小是否超过系统指定的最大限制，单位是KB
+	 * @param lengthKB 要上传的文件的大小，判断其大小是否超过系统指定的最大限制，单位是KB (1024B=1KB)
 	 * @return 若超出大小，则返回result:Failure ，info为出错原因
 	 */
 	public BaseVO verifyFileMaxLength(int lengthKB){
@@ -280,35 +280,6 @@ public class FileUpload{
 	}
 	
 	/**
-	 * 给出文本内容，写出文件
-	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
-	 * @param text 文本内容
-	 * @param encode 编码格式，可传入 {@link FileUpload#GBK}、{@link FileUpload#UTF8}
-	 * @return  {@link UploadFileVO}
-	 */
-	public UploadFileVO uploadString(String path, String text, String encode){
-		try {
-			InputStream inputStream = StringUtil.stringToInputStream(text, encode);
-			return upload(path, inputStream);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			UploadFileVO vo = new UploadFileVO();
-			vo.setBaseVO(UploadFileVO.FAILURE, e.getMessage());
-			return vo;
-		}
-	}
-	
-	/**
-	 * 给出文本内容，写出文件。写出UTF－8编码
-	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
-	 * @param text 文本内容
-	 */
-	public UploadFileVO uploadString(String path, String text){
-		return uploadString(path, text, com.xnx3.FileUtil.UTF8);
-	}
-	
-	
-	/**
 	 * 上传本地文件
 	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
 	 * @param localPath 本地要上传的文件的绝对路径，如 "/jar_file/iw.jar"
@@ -362,13 +333,14 @@ public class FileUpload{
 		}
 		
 		/** 判断文件大小是否超出最大限制的大小 **/
-		int lengthKB = 0;
+//		int lengthKB = 0;
+		long length_B = 0;
 		try {
-			lengthKB = (int) Math.ceil(inputStream.available()/1024);
+			length_B = inputStream.available();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		BaseVO baseVO = verifyFileMaxLength(lengthKB);
+		BaseVO baseVO = verifyFileMaxLength(length_B);
 		if(baseVO.getResult() - BaseVO.FAILURE == 0){
 			vo.setBaseVO(baseVO);
 			return vo;
@@ -387,7 +359,7 @@ public class FileUpload{
 			vo.setUrl(domain+vo.getPath());
 		}
 		//提取文件名
-		vo.setFileName(UrlUtil.getFileName("http://zvo.cn/"+path));
+		vo.setName(UrlUtil.getFileName("http://zvo.cn/"+path));
 		
 		return vo;
 	}
@@ -436,6 +408,35 @@ public class FileUpload{
 		String fileSuffix = StringUtil.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
 		String name=Lang.uuid()+"."+fileSuffix;
 		return upload(path+name, inputStream);
+	}
+	
+
+	/**
+	 * 给出文本内容，写出文件
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文本内容
+	 * @param encode 编码格式，可传入 {@link FileUpload#GBK}、{@link FileUpload#UTF8}
+	 * @return  {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadString(String path, String text, String encode){
+		try {
+			InputStream inputStream = StringUtil.stringToInputStream(text, encode);
+			return upload(path, inputStream);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			UploadFileVO vo = new UploadFileVO();
+			vo.setBaseVO(UploadFileVO.FAILURE, e.getMessage());
+			return vo;
+		}
+	}
+	
+	/**
+	 * 给出文本内容，写出文件。写出UTF－8编码
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文本内容
+	 */
+	public UploadFileVO uploadString(String path, String text){
+		return uploadString(path, text, com.xnx3.FileUtil.UTF8);
 	}
 	
 	/**
@@ -504,6 +505,17 @@ public class FileUpload{
 			Log.debug(e.getMessage());
 			return null;
 		}
+	}
+	
+
+	/**
+	 * 传入一个路径，取得文件数据
+	 * @param path 要获取的文件的路径，如  site/123/index.html
+	 * @return 返回文件数据。若找不到，或出错，则返回 null
+	 */
+	public InputStream getInputStream(String path){
+		InputStream is = getstorage().get(path);
+		return is;
 	}
 	
 	/**
