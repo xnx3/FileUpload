@@ -1,12 +1,20 @@
 package cn.zvo.fileupload.framework.springboot;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.xnx3.Lang;
+import com.xnx3.UrlUtil;
+
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
@@ -145,5 +153,53 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 		}
 		return uploadFileVO;
 	}
+	
+	/**
+	 * 文件下载操作，通过浏览器打开某个网址实现文件下载
+	 * @param path 要下载的文件，传入如 /site/219/abc.zip 
+	 * @param response {@link HttpServletResponse}
+	 */
+	public void download(String path, HttpServletResponse response){
+		// 设置response的Header
+		response.setCharacterEncoding("UTF-8");
+
+		try {
+			// 将文件写入输入流
+			InputStream fis = FileUploadUtil.getInputStream(path);
+			byte[] buffer = new byte[fis.available()];
+			fis.read(buffer);
+			fis.close();
+			
+			// 清空response
+			response.reset();
+			//Content-Disposition的作用：告知浏览器以何种方式显示响应返回的文件，用浏览器打开还是以附件的形式下载到本地保存
+			//attachment表示以附件方式下载 inline表示在线打开 "Content-Disposition: inline; filename=文件名.mp3"
+			// filename表示文件的默认名称，因为网络传输只支持URL编码的相关支付，因此需要将文件名URL编码后进行传输,前端收到后需要反编码才能获取到真正的名称
+			response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(UrlUtil.getFileName("http://zvo.cn/"+path), "UTF-8"));
+			// 告知浏览器文件的大小
+			response.addHeader("Content-Length", "" + fis.available());
+			OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+			response.setContentType("application/octet-stream");
+			outputStream.write(buffer);
+			outputStream.flush();
+		} catch (java.lang.NullPointerException nullEx) {
+			//下载的文件未发现
+			try {
+				response.getWriter().write("<html><body>file not find</body></html>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception ex) {
+			//其他异常
+			ex.printStackTrace();
+			try {
+				response.getWriter().write("<html><body>"+ex.getMessage()+"</body></html>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	
 }

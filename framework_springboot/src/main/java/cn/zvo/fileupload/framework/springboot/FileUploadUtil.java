@@ -7,8 +7,13 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
 import cn.zvo.fileupload.StorageInterface;
@@ -121,6 +126,26 @@ public class FileUploadUtil{
 		return fileupload.upload(path, fileName, inputStream);
 	}
 	
+	/**
+	 * SpringMVC 上传文件，配置允许上传的文件后缀再 systemConfig.xml 的AttachmentFile节点
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个文件，表单里上传文件的文件名
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO upload(String path,HttpServletRequest request,String formFileName) {
+		return fileupload.upload(path, request, formFileName);
+	}
+
+	/**
+	 * 上传文件
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传文件，会自动转化为{@link MultipartFile}保存
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO upload(String path, MultipartFile multipartFile) {
+		return fileupload.upload(path, multipartFile);
+	}
 
 	/**
 	 * 给出文本内容，写出文件
@@ -165,13 +190,50 @@ public class FileUploadUtil{
 		return fileupload.uploadImage(path, imageUrl);
 	}
 	
-
+	/**
+	 * 上传图片文件。
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * 			<br/><b>注意，这里传入的是路径，不带文件名</b>
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。若传入0.则不启用此功能
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO uploadImage(String path, MultipartFile multipartFile, int maxWidth) {
+		return fileupload.uploadImage(path, multipartFile, maxWidth);
+	}
+	
+	/**
+	 * 上传图片文件
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * 			<br/><b>注意，这里传入的是路径，不带文件名</b>
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO uploadImage(String path, MultipartFile multipartFile) {
+		return uploadImage(path, multipartFile, 0);
+	}
+	
+	/**
+	 * 上传图片文件
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public static UploadFileVO uploadImage(String path,HttpServletRequest request,String formFileName, int maxWidth) {
+		return fileupload.uploadImage(path, request, formFileName, maxWidth);
+	}
+	
 	/**
 	 * 传入一个路径，取得文件数据
 	 * @param path 要获取的文件的路径，如  site/123/index.html
 	 * @return 返回文件数据。若找不到，或出错，则返回 null
 	 */
-	public InputStream getInputStream(String path){
+	public static InputStream getInputStream(String path){
 		return fileupload.getInputStream(path);
 	}
 	
@@ -190,6 +252,15 @@ public class FileUploadUtil{
 	 */
 	public static void delete(String path){
 		fileupload.delete(path);
+	}
+	
+	/**
+	 * 文件下载操作，通过浏览器打开某个网址实现文件下载
+	 * @param path 要下载的文件，传入如 /site/219/abc.zip 
+	 * @param response {@link HttpServletResponse}
+	 */
+	public static void download(String path, HttpServletResponse response){
+		fileupload.download(path, response);
 	}
 	
 	/**

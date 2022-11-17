@@ -1,12 +1,22 @@
 package cn.zvo.fileupload.demo.springboot;
 
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import cn.zvo.fileupload.framework.springboot.ApplicationConfig;
+
+import com.xnx3.UrlUtil;
 import cn.zvo.fileupload.framework.springboot.FileUpload;
 import cn.zvo.fileupload.framework.springboot.FileUploadUtil;
 import cn.zvo.fileupload.storage.local.LocalStorage;
@@ -20,38 +30,33 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 @RequestMapping("/")
 public class DemoController{
 	
-	
-	@RequestMapping(value="test")
+	/**
+	 * 直接访问这个，进行随便上传一个文本文件进行测试
+	 */
+	@RequestMapping(value="upload.do")
 	@ResponseBody
-	public UploadFileVO test(){
+	public UploadFileVO upload(){
 		return FileUploadUtil.uploadString("a/b.txt", "abcde");
 	}
 	
 	/**
-	 * 图片上传
-	 * @author 管雷鸣
+	 * 文件上传
 	 */
 	@RequestMapping(value="upload.json", method= {RequestMethod.POST})
 	@ResponseBody
 	public UploadFileVO uploadImage(@RequestParam("file") MultipartFile multipartFile){
-		//注意，springboot框架中用的是 cn.zvo.fileupload.framework.springboot.FileUpload
-		FileUpload fileUpload = new FileUpload();
-		//设置允许上传的后缀名
-		fileUpload.setAllowUploadSuffix("jpg|png|gif");
-		//设置允许上传的文件大小
-		fileUpload.setMaxFileSize("2MB");
-		
-		/*
-		 * 设置使用本地存储的方式。并将上传的文件存储到 static 目录下
-		 * 如果不使用 fileUpload.setStorage(...) 设置存储方式，那默认使用的便是本地存储，文件存储到当前项目的根路径下
-		 */
-		LocalStorage localStorage = new LocalStorage();
-		localStorage.setLocalFilePath(localStorage.getLocalFilePath()+"static/");
-		fileUpload.setStorage(localStorage);
-		
-		//将图片上传到 upload/images/ 文件夹中
-		UploadFileVO vo = fileUpload.uploadImage("upload/images/", multipartFile);
-		return vo;
+		//将文件上传到 upload/file/ 文件夹中
+		return FileUploadUtil.uploadImage("upload/file/", multipartFile);
 	}
+	
+	/**
+	 * 文件下载
+	 * @param path 要下载的文件，传入如 upload/file/123.zip
+	 */
+	@RequestMapping(value="download")
+	public void download(String path, HttpServletResponse response){
+		FileUploadUtil.download(path, response);
+	}
+	
 	
 }
