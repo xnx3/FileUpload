@@ -18,6 +18,7 @@ import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
 import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
+import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
@@ -73,6 +74,32 @@ public class FileUploadUtil{
 		
 	}
 	
+	/**
+	 * 判断当前文件附件存储使用的是哪种存储方式
+	 * @param storageClassName 存储方式的实现类的名字，如默认带的本地存储为 {@link LocalStorage} ，这里如果要判断是否是使用的本地存储，可传入 "LocalStorage"
+	 * @return 是否使用
+	 * 			<ul>
+	 * 				<li>true ： 是此种模式</li>
+	 * 				<li>false ： 不是此种模式</li>
+	 * 			</ul>
+	 */
+	public static boolean isStorage(String storageClassName){
+		return fileupload.isStorage(storageClassName);
+	}
+	
+	/**
+	 * 判断当前文件附件存储使用的是哪种存储方式
+	 * @param storageClass 存储方式的实现类，如默认带的本地存储为 {@link LocalStorage} ，这里如果要判断是否是使用的本地存储，可传入 LocalStorage.class
+	 * @return 是否使用
+	 * 			<ul>
+	 * 				<li>true ： 是此种模式</li>
+	 * 				<li>false ： 不是此种模式</li>
+	 * 			</ul>
+	 */
+	public static boolean isStorage(Class storageClass){
+		return fileupload.isStorage(storageClass);
+	}
+    
 	/**
 	 * 上传本地文件
 	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
