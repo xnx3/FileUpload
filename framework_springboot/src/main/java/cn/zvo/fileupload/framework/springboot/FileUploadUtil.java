@@ -49,26 +49,28 @@ public class FileUploadUtil{
 			fileupload.setMaxFileSize(config.getMaxSize());
 		}
 		
-
-		for (Map.Entry<String, Map<String, String>> entry : config.getStorage().entrySet()) {
-			//拼接，取该插件在哪个包
-			String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
-			
-			List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
-			//搜索继承StorageInterface接口的
-			List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
-			for (int i = 0; i < storageClassList.size(); i++) {
-				Class storageClass = storageClassList.get(i);
-				Log.debug("fileupload storage : "+storageClass.getName());
-				try {
-					Object newInstance = storageClass.getDeclaredConstructor(Map.class).newInstance(entry.getValue());
-					StorageInterface storage = (StorageInterface) newInstance;
-					fileupload.setStorage(storage);
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException| InvocationTargetException  | NoSuchMethodException | SecurityException e) {
-					e.printStackTrace();
+		if(config.getStorage() != null) {
+			for (Map.Entry<String, Map<String, String>> entry : config.getStorage().entrySet()) {
+				//拼接，取该插件在哪个包
+				String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
+				
+				List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
+				//搜索继承StorageInterface接口的
+				List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
+				for (int i = 0; i < storageClassList.size(); i++) {
+					Class storageClass = storageClassList.get(i);
+					Log.debug("fileupload storage : "+storageClass.getName());
+					try {
+						Object newInstance = storageClass.getDeclaredConstructor(Map.class).newInstance(entry.getValue());
+						StorageInterface storage = (StorageInterface) newInstance;
+						fileupload.setStorage(storage);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException| InvocationTargetException  | NoSuchMethodException | SecurityException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
+		
 	}
 	
 	/**
