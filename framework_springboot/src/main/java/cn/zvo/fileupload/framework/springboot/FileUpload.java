@@ -37,18 +37,18 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 			return vo;
 		}
 		
+		//要上传的文件
 		InputStream inputStream = null;
 		try {
 			inputStream = multipartFile.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if(inputStream == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
-			return vo;
-		}
 		
-		vo = upload(path, inputStream);
+		//定义传上去后保存的文件名
+		String name = Lang.uuid() + "." + Lang.findFileSuffix(multipartFile.getOriginalFilename());
+		
+		vo = upload(path+name, inputStream);
 		return vo;
 	}
 	
@@ -69,19 +69,19 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 			return vo;
 		}
 		
+		//要上传的文件
 		InputStream inputStream = null;
 		try {
 			inputStream = multipartFile.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if(inputStream == null){
-			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
-			return vo;
-		}
 		
 		//获取上传的文件的后缀
 		String fileSuffix = Lang.findFileSuffix(multipartFile.getOriginalFilename());
+		//定义传上去后保存的文件名
+		String name = Lang.uuid() + "." + fileSuffix;
+		
 		//上传
 		vo = uploadImage(path, inputStream, fileSuffix, maxWidth);
 		return vo;
@@ -199,7 +199,5 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 			}
 		}
 	}
-	
-	
 	
 }

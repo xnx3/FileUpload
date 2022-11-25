@@ -326,6 +326,12 @@ public class FileUpload{
 	public UploadFileVO upload(String path,InputStream inputStream){
 		UploadFileVO vo = new UploadFileVO();
 		
+		/*** 判断上传的文件是否有选择 ***/
+		if(inputStream == null){
+			vo.setBaseVO(UploadFileVO.FAILURE, "请选择要上传的文件");
+			return vo;
+		}
+		
 		/** 判断存储出去的后缀是否合规 **/
 		if(!isAllowUpload(path)){
 			vo.setBaseVO(UploadFileVO.FAILURE, "该后缀不允许被上传");
