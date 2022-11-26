@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>storage.aliyunOSS</artifactId>
 	<version>1.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<description>java file upload</description>
 	<url>https://github.com/xnx3/FileUpload</url>
@@ -43,24 +43,7 @@
 		<developerConnection>scm:git:ssh://github.com/xnx3/FileUpload.git</developerConnection>
 		<url>github.com/xnx3/FileUpload</url>
 	</scm>
-	
-	
-	<modules>
-		<!-- 核心实现,带着默认的本地存储的方式 -->
-		<module>core</module>
-		
-		<!-- 使用华为云OBS存储 -->
-		<module>storage_huaweicloudOBS</module>
-		<!-- 使用阿里云OSS存储 -->
-		<module>storage_aliyunOSS</module>
-		
-		<!-- 针对框架：servlet，也就是基本的Servlet的项目都可用 -->
-		<module>framework_servlet</module>
-		<!-- 针对框架：springmvc （可在springboot中使用） -->
-		<module>framework_springboot</module>
-    </modules>
-	
-	
+
 	<build>
 		<plugins>
 			<!-- Source -->
@@ -114,12 +97,24 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			 -->
+			</plugin> -->
 		</plugins>
 	</build>
 	
-	<dependencies>
+	<dependencies>  
+		<dependency> 
+			<groupId>cn.zvo.fileupload</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+			
+	  	<!-- 阿里云依赖 -->
+		<dependency>
+		    <groupId>com.aliyun.oss</groupId>
+		    <artifactId>aliyun-sdk-oss</artifactId>
+		    <version>2.8.2</version>
+		</dependency>
 	</dependencies>
 	
 	<distributionManagement>
