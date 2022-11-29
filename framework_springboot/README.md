@@ -5,7 +5,7 @@ springboot 项目中进行文件上传
 #### 1.1 pom.xml 加入
 
 ````
-<!-- 文件上传相关的核心支持，是必须有的 -->
+<!-- 文件上传相关的核心支持 https://github.com/xnx3/FileUpload -->
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>core</artifactId>
