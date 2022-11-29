@@ -37,7 +37,20 @@ public class FileUploadUtil{
      */
     @PostConstruct
 	public void init() {
-		fileupload = new FileUpload();
+    	loadConfig(this.config);
+	}
+	
+    /**
+     * 加载配置 {@link ApplicationConfig} 文件，通过其属性来决定使用何种配置。
+     * <br>这个其实就相当于用java代码来动态决定配置
+     * @param config
+     */
+    public static void loadConfig(ApplicationConfig config) {
+    	if(config == null) {
+    		return;
+    	}
+    	
+    	fileupload = new FileUpload();
 		
 		//Log.debug(config.toString());
 		if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
@@ -71,9 +84,8 @@ public class FileUploadUtil{
 				}
 			}
 		}
-		
-	}
-	
+    }
+    
 	/**
 	 * 判断当前文件附件存储使用的是哪种存储方式
 	 * @param storageClassName 存储方式的实现类的名字，如默认带的本地存储为 {@link LocalStorage} ，这里如果要判断是否是使用的本地存储，可传入 "LocalStorage"
