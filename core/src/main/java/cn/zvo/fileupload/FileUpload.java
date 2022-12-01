@@ -39,7 +39,7 @@ public class FileUpload{
 	private int maxFileSizeKB = -1;							
 	
 	//允许上传的后缀名数组，存储如 jpg 、 gif、zip
-	public static String[] allowUploadSuffixs;
+	public String[] allowUploadSuffixs;
 	
 	//实际执行的存储动作。不可直接使用，需使用 getStorage() 获取
 	private StorageInterface storage;					
@@ -67,7 +67,7 @@ public class FileUpload{
 	 * 获取当前使用的存储模式，进行存储。
 	 * @return 如果在数据库表 system 表加载成功之前调用此方法，会返回null，当然，这个空指针几乎可忽略。实际使用中不会有这种情况
 	 */
-	public StorageInterface getstorage(){
+	public StorageInterface getStorage(){
 		if(this.storage == null){
 			//赋予默认本地存储模式
 			LocalStorage localStorage = new LocalStorage();
@@ -98,15 +98,15 @@ public class FileUpload{
 	public boolean isStorage(String storageClassName){
 		//向前兼容，兼容 wm 2.25 (http://wm.zvo.cn)及以前版本的设置
 		if(storageClassName.equalsIgnoreCase("localFile")) {
-			storageClassName = "LocalServerMode";
+			storageClassName = "LocalStorage";
 		}else if(storageClassName.equalsIgnoreCase("huaWeiYunOBS")) {
-			storageClassName = "HuaweiyunOBSMode";
+			storageClassName = "HuaweicloudOBSStorage";
 		}else if(storageClassName.equalsIgnoreCase("aliyunOSS")) {
-			storageClassName = "AliyunOSSMode";
+			storageClassName = "AliyunOSSStorage";
 		}
 		
 		//取得当前实现的文件的名字，例如本地存储的命名为 LocalServerMode.java ,那这里会取到 LocalServerMode
-		String currentModeFileName = this.getstorage().getClass().getSimpleName();
+		String currentModeFileName = this.getStorage().getClass().getSimpleName();
 		if(currentModeFileName.equalsIgnoreCase(storageClassName)) {
 			return true;
 		}
@@ -174,6 +174,15 @@ public class FileUpload{
 		}
 		return maxFileSizeKB;
 	}
+	
+	/**
+	 * 设置最大上传文件大小。不建议使用，请使用 {@link #setMaxFileSize(String)}
+	 * @param maxFileSizeKB 单位是KB，比如传入10，则代表最大上传文件大小为 10KB
+	 * @deprecated
+	 */
+	public void setMaxFileSizeKB(int maxFileSizeKB) {
+		this.maxFileSizeKB = maxFileSizeKB;
+	}
 
 	/**
 	 * 判断要上传的文件是否超出大小限制，若超出大小限制，返回出错原因
@@ -214,6 +223,7 @@ public class FileUpload{
 			return;
 		}
 		this.maxFileSize = maxSize;
+		this.maxFileSizeKB = -1;	//清空转化，使用时重新将 maxFileSize 进行转化
 	}
 	
 
@@ -221,12 +231,12 @@ public class FileUpload{
 	 * 设置允许可上传的后缀名。
 	 * @param allowUploadSuffix 传入格式入 png|jpg|gif|zip 多个用英文|分割
 	 */
-	public void setAllowUploadSuffix(String allowUploadSuffix) {
-		if(allowUploadSuffix == null) {
+	public void setAllowUploadSuffix(String allowUploadSuffixs) {
+		if(allowUploadSuffixs == null) {
 			return;
 		}
 		
-		String ss[] = allowUploadSuffix.split("\\|");
+		String ss[] = allowUploadSuffixs.split("\\|");
 		//过滤一遍，空跟无效的
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < ss.length; i++) {
@@ -237,12 +247,33 @@ public class FileUpload{
 		}
 		
 		//初始化创建数组
-		allowUploadSuffixs = new String[list.size()];
+		this.allowUploadSuffixs = new String[list.size()];
 		for (int i = 0; i < list.size(); i++) {
-			allowUploadSuffixs[i] = list.get(i);
+			this.allowUploadSuffixs[i] = list.get(i);
 		}
 	}
 	
+
+	/**
+	 * 设置允许可上传的后缀名。
+	 * @param allowUploadSuffixs 传入格式如 {"jpg","png","gif"}
+	 */
+	public void setAllowUploadSuffixs(String[] allowUploadSuffixs) {
+		if(allowUploadSuffixs == null) {
+			return;
+		}
+		this.allowUploadSuffixs = allowUploadSuffixs;
+	}
+	
+	
+	/**
+	 * 获取当前可允许上传的后缀
+	 * @return 返回可允许上传的后缀名，格式如 {"jpg","png","gif"}
+	 */
+	public String[] getAllowUploadSuffixs() {
+		return allowUploadSuffixs;
+	}
+
 	/**
 	 * 判断当前后缀名是否在可允许上传的后缀中
 	 * @param path 上传文件要保存到的路径。传入如 site/219/index.html 当然，你也可以直接传入具体后缀，如 html
@@ -354,7 +385,7 @@ public class FileUpload{
 		vo.setSize(length_B);
 		
 		//执行上传
-		vo = getstorage().upload(path, inputStream);
+		vo = getStorage().upload(path, inputStream);
 		if(vo.getSize() < 1) {
 			vo.setSize(length_B);
 		}
@@ -499,7 +530,7 @@ public class FileUpload{
 	 * @return 返回其文本内容。若找不到，或出错，则返回 null
 	 */
 	public String getText(String path){
-		InputStream is = getstorage().get(path);
+		InputStream is = getStorage().get(path);
 		if(is == null) {
 			return null;
 		}
@@ -520,7 +551,7 @@ public class FileUpload{
 	 * @return 返回文件数据。若找不到，或出错，则返回 null
 	 */
 	public InputStream getInputStream(String path){
-		InputStream is = getstorage().get(path);
+		InputStream is = getStorage().get(path);
 		return is;
 	}
 	
@@ -529,7 +560,7 @@ public class FileUpload{
 	 * @param path 文件所在的路径，如 "jar/file/xnx3.jpg"
 	 */
 	public void delete(String path){
-		getstorage().delete(path);
+		getStorage().delete(path);
 	}
 	
 	/**
@@ -538,7 +569,7 @@ public class FileUpload{
 	 * @param newFilePath 复制的文件所在的路径，所放的路径。(相对路径，非绝对路径，操作的是当前附件文件目录下)
 	 */
 	public void copy(String originalFilePath, String newFilePath){
-		getstorage().copyFile(originalFilePath, newFilePath);
+		getStorage().copyFile(originalFilePath, newFilePath);
 	}
 	
 	
@@ -548,7 +579,7 @@ public class FileUpload{
 	 * @return 计算出来的大小。单位：字节，B。  千分之一KB
 	 */
 	public long getDirectorySize(String path){
-		return getstorage().getSize(path);
+		return getStorage().getSize(path);
 	}
 	
 	/**
@@ -557,7 +588,7 @@ public class FileUpload{
 	 * @return 单位是 B， * 1000 = KB 。 如果返回-1，则是文件未发现，文件不存在
 	 */
 	public long getFileSize(String path){
-		return getstorage().getSize(path);
+		return getStorage().getSize(path);
 	}
 	
 	/**
@@ -566,16 +597,14 @@ public class FileUpload{
 	 * @return 该目录下一级子文件（如果有文件夹，也包含文件夹）列表。如果size为0，则是没有子文件或文件夹。无论什么情况不会反null
 	 */
 	public List<SubFileBean> getSubFileList(String path){
-		return getstorage().getSubFileList(path);
+		return getStorage().getSubFileList(path);
 	}
 	
-
 	/**
 	 * 创建文件夹
 	 * @param path 要创建的文件路径，传入如 site/219/test/ 则是创建 test 文件夹
 	 */
 	public void createFolder(String path) {
-		getstorage().createFolder(path);
+		getStorage().createFolder(path);
 	}
-	
 }
