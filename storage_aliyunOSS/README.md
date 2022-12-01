@@ -7,13 +7,13 @@
 <!-- 文件上传相关的核心支持，是必须有的  -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>fileupload-core</artifactId>
     <version>1.0</version>
 </dependency>
 <!-- 加入OSS存储相关实现 -->
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>storage.aliyunOSS</artifactId>
+	<artifactId>fileupload-storage-aliyunOSS</artifactId>
 	<version>1.0</version>
 </dependency>
 <!-- 如果你在springboot使用，可引入 framework.springboot 模块，快速再springboot中使用 -->

@@ -8,13 +8,13 @@ springboot 项目中进行文件上传
 <!-- 文件上传相关的核心支持 https://github.com/xnx3/FileUpload -->
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>core</artifactId>
+	<artifactId>fileupload-core</artifactId>
 	<version>1.0</version>
 </dependency>
 <!-- 在 SpringBoot 框架中的快速使用。 （在不同的框架中使用，这里引入的framework.xxx也不同） -->
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>framework.springboot</artifactId>
+	<artifactId>fileupload-framework-springboot</artifactId>
 	<version>1.0</version>
 </dependency> 
 ````
@@ -93,7 +93,7 @@ fileupload.domain=http://res.zvo.cn/
 <!-- 加入华为云OBS存储的实现。 （存储到哪，这里artifactId就引入的哪里的 storage.xxx 如果单纯存储到本地，这里直接就不用在引入这个 storage.xxx 了，core中默认带了本地文件存储的实现） -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
-    <artifactId>storage.huaweicloudOBS</artifactId>
+    <artifactId>fileupload-storage-huaweicloudOBS</artifactId>
     <version>1.0</version>
 </dependency>
 ````

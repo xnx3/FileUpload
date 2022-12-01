@@ -7,7 +7,7 @@
 <!-- 文件上传相关的核心支持，是必须有的 -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>fileupload-core</artifactId>
     <version>1.0</version>
 </dependency>
 ````

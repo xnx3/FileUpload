@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>demo.javase</artifactId>
+	<artifactId>fileupload-demo-javase</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
@@ -104,7 +104,7 @@
 	<dependencies>  
 		<dependency> 
 			<groupId>cn.zvo.fileupload</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>fileupload-core</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
