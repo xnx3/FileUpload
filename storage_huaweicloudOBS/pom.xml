@@ -106,7 +106,7 @@
 			<groupId>cn.zvo.fileupload</groupId>
 			<artifactId>core</artifactId>
 			<version>1.0</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 			
 	  	<!-- 华为云依赖 -->

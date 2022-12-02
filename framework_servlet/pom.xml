@@ -104,9 +104,9 @@
 	<dependencies>  
 		<dependency> 
 			<groupId>cn.zvo.fileupload</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>fileupload-core</artifactId>
 			<version>1.0</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- springboot -->
@@ -114,7 +114,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
