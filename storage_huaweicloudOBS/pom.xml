@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>storage.huaweicloudOBS</artifactId>
+	<artifactId>fileupload-storage-huaweicloudOBS</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
@@ -104,7 +104,7 @@
 	<dependencies>  
 		<dependency> 
 			<groupId>cn.zvo.fileupload</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>fileupload-core</artifactId>
 			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
