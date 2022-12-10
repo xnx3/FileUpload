@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
  */
 @EnableConfigurationProperties(ApplicationConfig.class)
 @Configuration
-public class FileUploadUtil{
+public class FileUploadUtil implements CommandLineRunner{
 	public static FileUpload fileupload;
     @Resource
     private ApplicationConfig config;
@@ -35,8 +36,9 @@ public class FileUploadUtil{
     /**
      * springboot启动成功后自动执行初始化
      */
-    @PostConstruct
+//    @PostConstruct
 	public void init() {
+    	Log.debug("load fileupload config by application.properties/yml : "+this.config);
     	loadConfig(this.config);
 	}
 	
@@ -69,6 +71,14 @@ public class FileUploadUtil{
 				String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
 				
 				List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
+				if(classList.size() == 0) {
+					System.err.println("====================");
+					System.err.println(" 【【【 ERROR 】】】    ");
+					System.err.println(" fileupload 未发现 "+storagePackage +" 这个包存在，请确认pom.xml是否加入了这个 storage 支持模块");
+					System.err.println("====================");
+					continue;
+				}
+				
 				//搜索继承StorageInterface接口的
 				List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
 				for (int i = 0; i < storageClassList.size(); i++) {
@@ -347,6 +357,12 @@ public class FileUploadUtil{
 	 */
 	public static void createFolder(String path) {
 		fileupload.createFolder(path);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		Log.debug("load fileupload config by application.properties / yml : "+this.config);
+    	loadConfig(this.config);
 	}
 
 }

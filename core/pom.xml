@@ -105,7 +105,7 @@
 		<dependency> 
 			<groupId>com.xnx3.util</groupId>
 			<artifactId>xnx3-util</artifactId>
-			<version>1.10</version>
+			<version>1.11</version>
 		</dependency>
 	</dependencies>
 	

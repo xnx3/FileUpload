@@ -62,5 +62,4 @@ public class ApplicationConfig {
 				+ allowUploadSuffix + ", maxSize=" + maxSize + "]";
 	}
 	
-	
 }
