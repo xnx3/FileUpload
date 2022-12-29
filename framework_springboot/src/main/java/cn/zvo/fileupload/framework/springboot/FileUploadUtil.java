@@ -52,7 +52,7 @@ public class FileUploadUtil implements CommandLineRunner{
     		fileupload = new FileUpload();
     	}
     	
-		//Log.debug(config.toString());
+		Log.debug(config.toString());
 		if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
 			fileupload.setAllowUploadSuffix(config.getAllowUploadSuffix());
 		}
