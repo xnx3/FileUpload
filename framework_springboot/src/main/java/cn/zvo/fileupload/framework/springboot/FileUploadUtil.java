@@ -5,16 +5,13 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
 import cn.zvo.fileupload.StorageInterface;
@@ -51,9 +48,10 @@ public class FileUploadUtil implements CommandLineRunner{
     	if(config == null) {
     		return;
     	}
+    	if(fileupload == null) {
+    		fileupload = new FileUpload();
+    	}
     	
-    	fileupload = new FileUpload();
-		
 		//Log.debug(config.toString());
 		if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
 			fileupload.setAllowUploadSuffix(config.getAllowUploadSuffix());
