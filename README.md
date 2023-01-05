@@ -5,7 +5,7 @@
 ## 快速使用
 #### 1. pom.xml 中加入：
 
-如果你只是单纯本地用，用不到像是华为云OBS存储了、Springboot框架的，那你可以只使用 ```` <artifactId>core</artifactId> ```` 这一个核心实现即可
+如果你只是单纯本地用，用不到像是华为云OBS存储了、Springboot框架的，那你可以只使用 ```` <artifactId>fileupload-core</artifactId> ```` 这一个核心实现即可
 
 ````
 <!-- 文件上传相关的核心支持 https://github.com/xnx3/FileUpload -->

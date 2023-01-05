@@ -4,9 +4,8 @@
 # 1. 快速体验
 ### 1.1 git拉下本项目
 
-### 1.2 修改华为云OBS相关参数
+### 1.2 修改Demo中相关参数
 打开 ```` cn.zvo.fileupload.storage.huaweicloudOBS.Demo.java ````  
-设置华为云obs的相关参数  
 
 ````
 /**** 定义存储位置，存储到华为云OBS中 ****/
@@ -32,7 +31,7 @@ UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-no
 <!-- 文件上传相关的核心支持，是必须有的  -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
-   <artifactId>fileupload-core</artifactId>
+    <artifactId>fileupload-core</artifactId>
     <version>1.0</version>
 </dependency>
 <!-- 加入华为云OBS存储相关实现 -->
