@@ -109,9 +109,9 @@ fileupload.domain=http://res.zvo.cn/
 # 如果此不设置，默认使用的是本地存储的方式。如果设置了，pom.xml 文件中，记得将此存储方式引入进来，不然会报错找不到这个class文件
 # 下面便是具体针对阿里云oss这种存储方式的配置了
 # 阿里云的 Access Key Id
-fileupload.storage.aliyunOSS.key=H0TPUBC6YDZxxxxxxxx
+fileupload.storage.aliyunOSS.accessKeyId=H0TPUBC6YDZxxxxxxxx
 # 阿里云的 Access Key Secret
-fileupload.storage.aliyunOSS.secret=je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx
+fileupload.storage.aliyunOSS.secretAccessKey=je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx
 # OSS服务的Endpoint。如：oss-cn-hongkong.aliyuncs.com
 fileupload.storage.aliyunOSS.endpoint=oss-cn-hongkong.aliyuncs.com
 # oss桶的名称
