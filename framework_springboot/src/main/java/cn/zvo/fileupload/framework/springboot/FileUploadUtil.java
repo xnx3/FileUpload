@@ -28,16 +28,7 @@ import cn.zvo.fileupload.vo.UploadFileVO;
 public class FileUploadUtil implements CommandLineRunner{
 	public static FileUpload fileupload;
     @Resource
-    private ApplicationConfig config;
-	
-    /**
-     * springboot启动成功后自动执行初始化
-     */
-//    @PostConstruct
-	public void init() {
-    	Log.debug("load fileupload config by application.properties/yml : "+this.config);
-    	loadConfig(this.config);
-	}
+    private ApplicationConfig fildUploadApplicationConfig;
 	
     /**
      * 加载配置 {@link ApplicationConfig} 文件，通过其属性来决定使用何种配置。
@@ -359,8 +350,8 @@ public class FileUploadUtil implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		Log.debug("load fileupload config by application.properties / yml : "+this.config);
-    	loadConfig(this.config);
+		Log.debug("load fileupload config by application.properties / yml : "+this.fildUploadApplicationConfig);
+    	loadConfig(this.fildUploadApplicationConfig);
 	}
 
 }

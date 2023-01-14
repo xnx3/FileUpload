@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * application.properties / yml 中的一些相关配置项目
  * @author 管雷鸣
  */
-@Component(value = "FildUploadApplicationConfig")
+@Component(value = "fildUploadApplicationConfig")
 @ConfigurationProperties(prefix = "fileupload")
 public class ApplicationConfig {
 	//自定义存储方式时，创建存储方式的初始化相关参数
