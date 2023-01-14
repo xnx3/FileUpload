@@ -130,7 +130,7 @@ fileupload.storage.aliyunOSS.bucketname=cha-template
 @ResponseBody
 public UploadFileVO uploadImage(@RequestParam("file") MultipartFile multipartFile){
 	//将文件上传到 upload/file/ 文件夹中
-	return fileUpload.uploadImage("upload/file/", multipartFile);
+	return FileUploadUtil.uploadImage("upload/file/", multipartFile);
 }
 
 /**
