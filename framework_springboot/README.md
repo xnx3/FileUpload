@@ -81,6 +81,11 @@ fileupload.maxSize=10MB
 fileupload.allowUploadSuffix=jpg|png|txt|zip
 # 设置上传后文件所访问URL的域名，传入如： http://xxxx.com/  注意格式，后面以 / 结尾。非必填，可不设置。这里更多是用于像是CDN加速时，有专门的附件域名的场景使用
 fileupload.domain=http://res.zvo.cn/
+#
+# 当前使用的是哪种存储方式。默认使用的是本地存储的方式。
+# 上传文件保存到的路径，格式如 /mnt/tomcat8/fileupload/ 、或者windows服务器的话路径如 C:\\Users\\Administrator\\Desktop\\log\\  注意最后的斜杠不能拉下。如果不设置此，则不开启，上传文件则没任何动作。
+#log.datasource.file.path=/mnt/tomcat8/fileupload/
+fileupload.storage.local.path=G:\\git\\FileUpload\\
 ````
 
 ## 3. 扩展-存储方式-使用华为云OBS进行存储
@@ -116,6 +121,8 @@ fileupload.storage.huaweicloudOBS.endpoint=obs.cn-north-4.myhuaweicloud.com
 # 桶的名称
 fileupload.storage.huaweicloudOBS.obsname=cha-template
 ````
+
+注意，要将 ````fileupload.storage.local.path```` 默认服务器本地存储的配置注释掉
 
 #### 3.3 启动，测试
 如此，就完成了从本地存储转为华为云OBS对象存储的实现。
