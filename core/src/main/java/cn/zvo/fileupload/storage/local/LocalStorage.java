@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.xnx3.BaseVO;
 import com.xnx3.FileUtil;
 import com.xnx3.Log;
@@ -26,6 +28,23 @@ public class LocalStorage implements StorageInterface{
 	
 	//附件保存在当前服务器上，保存的路径是哪个? 如果不设置，默认是保存到当前项目的根路径下
 	private String localFilePath;
+	
+	public LocalStorage() {
+	}
+
+	/**
+	 * 文件上传-华为云OBS
+	 * @param accessKeyId 华为云的 Access Key Id
+	 * @param accessKeySecret 华为云的 Access Key Secret
+	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
+	 * @param obsname 桶的名称
+	 */
+	public LocalStorage(Map<String, String> map) {
+		String path = map.get("path");
+		if(path != null && path.length() > 0) {
+			setLocalFilePath(path);
+		}
+	}
 	
 	/**
 	 * 获取本地上传的文件，是存放在磁盘的哪个路径下
