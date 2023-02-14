@@ -12,7 +12,7 @@ Java两行代码实现文件上传。2分钟对接使用，从此无论本地存
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>fileupload-core</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 </dependency>
 ````
 
@@ -75,7 +75,7 @@ fileUpload.setStorage(new HuaweicloudOBSStorage(key, secret, endpoint, obsname))
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>fileupload-framework-springboot</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 </dependency> 
 ````
 

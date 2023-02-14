@@ -9,13 +9,13 @@ springboot 项目中进行文件上传
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>fileupload-core</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 </dependency>
 <!-- 在 SpringBoot 框架中的快速使用。 （在不同的框架中使用，这里引入的framework.xxx也不同） -->
 <dependency> 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>fileupload-framework-springboot</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 </dependency> 
 ````
 
