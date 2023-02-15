@@ -54,8 +54,6 @@
 		<!-- 使用阿里云OSS存储 -->
 		<module>storage_aliyunOSS</module>
 		
-		<!-- 针对框架：servlet，也就是基本的Servlet的项目都可用 -->
-		<module>framework_servlet</module>
 		<!-- 针对框架：springmvc （可在springboot中使用） -->
 		<module>framework_springboot</module>
     </modules>
