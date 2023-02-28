@@ -49,8 +49,6 @@
 		<!-- 核心实现,带着默认的本地存储的方式 -->
 		<module>core</module>
 		
-		<!-- 使用华为云OBS存储 -->
-		<module>storage_huaweicloudOBS</module>
 		<!-- 使用阿里云OSS存储 -->
 		<module>storage_aliyunOSS</module>
 		
