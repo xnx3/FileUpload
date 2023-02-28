@@ -16,8 +16,8 @@ cn.zvo.fileupload.storage.huaweicloudOBS
 ````
 
 **注意**  
-包名的 ````cn.zvo.fileupload.storage.```` 是固定的，不要进行改动，这个是固定一定要这么写的。  
-而包名的 ````huaweicloudOBS```` 也是固定的，跟项目名能对应起来  
+1. 包名的 ````cn.zvo.fileupload.storage.```` 是固定的，不要进行改动，这个是固定一定要这么写的。  
+1. 而包名的 ````huaweicloudOBS```` 也是固定的，跟项目名能对应起来  
 
 ### 3. 新建类
 ##### 3.1 类的命名
@@ -31,45 +31,48 @@ cn.zvo.fileupload.storage.huaweicloudOBS
 要有一个构造方法，构造方法需要传入Map，具体代码如下
 
 ````
-	/**
-	 * 文件上传-华为云OBS
-	 * @param accessKeyId 华为云的 Access Key Id
-	 * @param accessKeySecret 华为云的 Access Key Secret
-	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
-	 * @param obsname 桶的名称
-	 */
-	public HuaweicloudOBSStorage(Map<String, String> map) {
-		String accessKeySecret = map.get("accessKeySecret");
-		String accessKeyId = map.get("accessKeyId");
-		String endpoint = map.get("endpoint");
-		String obsname = map.get("obsname");
-		
-		init(accessKeyId, accessKeySecret, endpoint, obsname);
-	}
-public ServiceInterfaceImplement(Map<String, String> config) {
-	//可以使用 config.get('username') 获取 application.peroperties 中设置的 translate.service.huawei.username 的值
+
+/**
+ * 文件上传-华为云OBS
+ * @param map 传入一个 Map<String, String> 其中map要定义这么几个参数：
+ * 			<ul>
+ * 				<li>map.put("accessKeyId", "华为云的 Access Key Id");</li>
+ * 				<li>map.put("accessKeySecret", "华为云的 Access Key Secret");</li>
+ * 				<li>map.put("endpoint", "区域，传入格式如 obs.cn-north-4.myhuaweicloud.com");  //详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a></li>
+ * 				<li>map.put("obsname", "桶的名称")</li>
+ * 			</ul>
+ */
+public HuaweicloudOBSStorage(Map<String, String> map) {
+	String accessKeySecret = map.get("accessKeySecret");
+	String accessKeyId = map.get("accessKeyId");
+	...
 }
 ````
 
+**注意**  
+构造方法必须要传入 ````Map<String, String> map```` 用来接收自定义设置的参数  
+具体接收的参数，参数的命名，扩展者自己定义即可。尽量跟对方存储的平台参数名保持一致  
+可以在构造方法中，拿到用户自定义的参数后进行相关初始化操作  
 
+##### 3.4 类中的一些三方组件使用
 
+相关实现如果人家SDK都封装好了，那就直接用SDK的。如果SDK还没有，需要掉接口的，网络请求这块可使用 cn.zvo.http.Http 这个，其使用说明参见 [https://github.com/xnx3/http.java](https://github.com/xnx3/http.java)
 
+### 4. application.properties 中配置
+在 SpringBoot 框架中使用，可通过设置 application.peroperties 中的配置项，来实现传入上面步骤 3.3 中的初始化参数。按照上面第2步所示， ，在 application.peroperties 中的配置便是如下：  
 
-### 2. 
-
-扩展时，有以下几点需要注意：
-1. 将扩展的翻译服务对接的实现，都要放到 cn.zvo.translate.service 这个包下。比如对接华为云翻译，那就建立一个 cn.zvo.translate.service 包，在这个包下建立一个名为 ServiceInterfaceImplement.java 的类
-2. ServiceInterfaceImplement 要实现 cn.zvo.translate.core.service.interfaces.ServiceInterface 接口
-3. 在跟翻译服务对接时，网络请求这块使用 cn.zvo.http.Http 这个，其使用说明参见 [https://github.com/xnx3/http.java](https://github.com/xnx3/http.java),  这样不至于引入很多杂七杂八的支持包进去。当然如果单纯就只是你自己用，你可以直接吧对方SDK，通过修改 pom.xml 中加入，来引入一堆的三方jar包。  
-4. 要有一个构造方法，构造方法需要传入Map，具体代码如下
 ````
-public ServiceInterfaceImplement(Map<String, String> config) {
-	//可以使用 config.get('username') 获取 application.peroperties 中设置的 translate.service.huawei.username 的值
-}
+# 华为云的 Access Key Id
+fileupload.storage.huaweicloudOBS.accessKeyId=H0TPUBC6YDZxxxxxxxx
+# 华为云的 Access Key Secret
+fileupload.storage.huaweicloudOBS.accessKeySecret=je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx
+# 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 https://developer.huaweicloud.com/endpoint?OBS
+fileupload.storage.huaweicloudOBS.endpoint=obs.cn-north-4.myhuaweicloud.com
+# 桶的名称
+fileupload.storage.huaweicloudOBS.obsname=cha-template
 ````
-5. application.peroperties 中的配置项，按照上面所示的 translate.service.huawei.username ，其中:  
-	1. translate.service 是固定的，
-	1. huawei 是在 cn.zvo.translate.service 包下所建立的针对华为云翻译所建立的包名
-	1. username 是自己定义的一个参数名，这里叫username，那么在 ServiceInterfaceImplement 的构造方法中获取时，也要用 config.get("username") 来取
-  
-这里已内置了两个翻译服务的对接示例，一个是google翻译、一个是华为云翻译，可以参考华为云翻译的实现 cn.zvo.translate.service.huawei.ServiceInterfaceImplement.java
+**注意**
+1. ````fileupload.storage.```` 是固定的，
+1. ````huaweicloudOBS```` 是项目在包 ````cn.zvo.fileupload.storage.huaweicloudOBS```` 中，去掉前面固定的 ````cn.zvo.fileupload.storage.```` 即可得到
+1. ````accessKeyId、accessKeySecret、endpoint、obsname```` 是在上面步骤 3.3 中自定义传入map的参数名
+
