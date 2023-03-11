@@ -1,4 +1,5 @@
 # linux系统中，加入 aliyunOSS服务的jar
+# 前提时通过 cms.zvo.cn 中一件安装的
 
 # fileupload-storage-aliyunOSS.jar
 cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
