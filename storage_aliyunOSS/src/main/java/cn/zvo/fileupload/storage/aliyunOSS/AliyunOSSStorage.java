@@ -171,8 +171,14 @@ public class AliyunOSSStorage implements StorageInterface {
 
 	@Override
 	public InputStream get(String path) {
-		OSSObject ossObject = getOss().getOSSClient().getObject(getOss().bucketName, path);
-		return ossObject.getObjectContent();
+		try {
+			OSSObject ossObject = getOss().getOSSClient().getObject(getOss().bucketName, path);
+			return ossObject.getObjectContent();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 }
