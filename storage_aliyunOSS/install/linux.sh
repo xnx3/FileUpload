@@ -14,3 +14,8 @@ wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/li
 cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
 rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/aliyun-java-sdk-core-*.jar
 wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/aliyun-java-sdk-core-3.0.7.jar
+
+# aliyun-java-sdk-sts-2.1.6.jar
+cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
+rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/aliyun-java-sdk-sts-*.jar
+wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/aliyun-java-sdk-sts-2.1.6.jar
