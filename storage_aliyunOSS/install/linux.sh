@@ -27,5 +27,10 @@ wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/li
 
 # httpcore-4.4.1.jar
 cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
-rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/httpcore-4.4.1.jar
+rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/httpcore-*.jar
 wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/httpcore-4.4.1.jar
+
+# jdom-1.1.jar
+cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
+rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/jdom-*.jar
+wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/jdom-1.1.jar
