@@ -3,7 +3,7 @@
 # fileupload-storage-aliyunOSS.jar
 cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
 rm -rf /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/fileupload-storage-aliyunOSS-*.jar
-wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/fileupload-storage-aliyunOSS-1.0.jar
+wget https://gitee.com/mail_osc/FileUpload/raw/main/storage_aliyunOSS/install/lib/fileupload-storage-aliyunOSS-1.0.1.jar
 
 # aliyun-sdk-oss-2.8.2.jar
 cd /mnt/tomcat8/webapps/ROOT/WEB-INF/lib/
