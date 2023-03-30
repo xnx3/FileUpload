@@ -33,11 +33,11 @@ public class LocalStorage implements StorageInterface{
 	}
 
 	/**
-	 * 文件上传-华为云OBS
-	 * @param accessKeyId 华为云的 Access Key Id
-	 * @param accessKeySecret 华为云的 Access Key Secret
-	 * @param endpoint 区域，传入格式如 "obs.cn-north-4.myhuaweicloud.com" ,详细可参考 <a href="https://developer.huaweicloud.com/endpoint?OBS">https://developer.huaweicloud.com/endpoint?OBS</a>
-	 * @param obsname 桶的名称
+	 * 附件上传之 服务器本身存储，服务器本地存储，附件存储到服务器硬盘上
+	 * @param map 传入一个 Map<String, String> 其中map要定义这么几个参数：
+	 * 			<ul>
+	 * 				<li>map.put("path", "文件上传到服务器的路径，将上传的文件保存到哪个目录，格式如 /mnt/tomcat8/site/123/  注意，这个参数可不传，非必传项");</li>
+	 * 			</ul>
 	 */
 	public LocalStorage(Map<String, String> map) {
 		String path = map.get("path");
