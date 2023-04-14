@@ -47,6 +47,9 @@ public class FileUpload{
 	//文件URL访问域名，格式如 http://res.zvo.cn/ 注意格式使协议开头，/结尾。 例如上传了一个文件到 image/head.jpg ，那这个文件的URL为 netUrl+"image/head.jpg"
 	public String domain = null;
 	
+	//默认的忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	public boolean defaultIgnoreConstrands = false;
+	
 	/**
 	 * 获取上传后文件所访问URL的域名
 	 * @return 返回如 http://res.weiunity.com/   若找不到，则返回null
@@ -317,9 +320,33 @@ public class FileUpload{
 	 * @return {@link PutResult} 若失败，返回null
 	 */
 	public UploadFileVO upload(String path, String localPath){
-		File localFile = new File(localPath);
-		return upload(path, localFile);
+		return upload(path, localPath, this.defaultIgnoreConstrands);
 	}
+	
+	/**
+	 * 上传本地文件
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param localPath 本地要上传的文件的绝对路径，如 "/jar_file/iw.jar"
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public UploadFileVO upload(String path, String localPath, boolean ignoreConstrands){
+		File localFile = new File(localPath);
+		return upload(path, localFile, ignoreConstrands);
+	}
+	
+//	
+//	/**
+//	 * 上传本地文件
+//	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+//	 * @param localPath 本地要上传的文件的绝对路径，如 "/jar_file/iw.jar"
+//	 * @return {@link PutResult} 若失败，返回null
+//	 */
+//	public UploadFileVO ignoreConstrandsUpload(String path, String localPath){
+//		File localFile = new File(localPath);
+//		return upload(path, localFile);
+//	}
+	
 	
 	/**
 	 * 上传本地文件。上传的文件名会被自动重命名为uuid+后缀
@@ -328,6 +355,18 @@ public class FileUpload{
 	 * @return {@link PutResult} 若失败，返回null
 	 */
 	public UploadFileVO upload(String path, File localFile){
+		return upload(path, localFile, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传本地文件。上传的文件名会被自动重命名为uuid+后缀
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param localFile 本地要上传的文件
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public UploadFileVO upload(String path, File localFile, boolean ignoreConstrands){
 		UploadFileVO vo = new UploadFileVO();
 		
 		BaseVO baseVO = verifyFileMaxLength(localFile);
@@ -339,7 +378,7 @@ public class FileUpload{
 		//将本地文件转化为流
 		try {
 			InputStream localInput = new FileInputStream(localFile);
-			return upload(path, localInput);
+			return upload(path, localInput, ignoreConstrands);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			vo.setBaseVO(UploadFileVO.FAILURE, "上传出错，要上传的文件不存在！");
@@ -355,6 +394,19 @@ public class FileUpload{
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO upload(String path,InputStream inputStream){
+		return upload(path, inputStream, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传文件。上传后的文件名固定
+	 * @param path 上传到哪里，包含上传后的文件名，如"image/head/123.jpg" 
+	 * 			<p>注意，这里是跟着上传的文件名的，文件名叫什么，就保存成什么</p>
+	 * @param inputStream 文件
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制，直接上传
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO upload(String path,InputStream inputStream, boolean ignoreConstrands){
 		UploadFileVO vo = new UploadFileVO();
 		
 		/*** 判断上传的文件是否有选择 ***/
@@ -363,26 +415,29 @@ public class FileUpload{
 			return vo;
 		}
 		
-		/** 判断存储出去的后缀是否合规 **/
-		if(!isAllowUpload(path)){
-			vo.setBaseVO(UploadFileVO.FAILURE, "该后缀不允许被上传");
-			return vo;
-		}
-		
-		/** 判断文件大小是否超出最大限制的大小 **/
-//		int lengthKB = 0;
+		//获取文件大小
 		long length_B = 0;
 		try {
 			length_B = inputStream.available();
+			vo.setSize(length_B);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		BaseVO baseVO = verifyFileMaxLength((long) Math.ceil(length_B/1024));
-		if(baseVO.getResult() - BaseVO.FAILURE == 0){
-			vo.setBaseVO(baseVO);
-			return vo;
+		
+		if(!ignoreConstrands) {
+			/** 判断存储出去的后缀是否合规 **/
+			if(!isAllowUpload(path)){
+				vo.setBaseVO(UploadFileVO.FAILURE, "该后缀不允许被上传");
+				return vo;
+			}
+			
+			/** 判断文件大小是否超出最大限制的大小 **/
+			BaseVO baseVO = verifyFileMaxLength((long) Math.ceil(length_B/1024));
+			if(baseVO.getResult() - BaseVO.FAILURE == 0){
+				vo.setBaseVO(baseVO);
+				return vo;
+			}
 		}
-		vo.setSize(length_B);
 		
 		//执行上传
 		vo = getStorage().upload(path, inputStream);
@@ -410,6 +465,18 @@ public class FileUpload{
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO upload(String path, InputStream inputStream, String fileSuffix) {
+		return upload(path, inputStream, fileSuffix, this.defaultIgnoreConstrands);
+	}
+	
+	/**
+	 * 上传文件
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param inputStream 要上传的文件的数据流
+	 * @param fileSuffix 上传的文件的后缀名
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO upload(String path, InputStream inputStream, String fileSuffix, boolean ignoreConstrands) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		if(!isAllowUpload(fileSuffix)){
@@ -422,7 +489,7 @@ public class FileUpload{
 			return vo;
 		}
 		
-		return upload(path, "."+fileSuffix, inputStream);
+		return upload(path, "."+fileSuffix, inputStream, ignoreConstrands);
 	}
 	
 
@@ -434,6 +501,19 @@ public class FileUpload{
 	 * @return {@link PutResult} 若失败，返回null
 	 */
 	public UploadFileVO upload(String path,String fileName,InputStream inputStream){
+		return upload(path, fileName, inputStream, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传文件
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param fileName 上传的文件名，如“xnx3.jar”；主要拿里面的后缀名。也可以直接传入文件的后缀名如“.jar。新的文件名会是自动生成的 uuid+后缀”
+	 * @param inputStream {@link InputStream}
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link PutResult} 若失败，返回null
+	 */
+	public UploadFileVO upload(String path,String fileName,InputStream inputStream, boolean ignoreConstrands){
 		UploadFileVO vo = new UploadFileVO();
 		
 		//进行文件后缀校验
@@ -444,7 +524,7 @@ public class FileUpload{
 		
 		String fileSuffix = StringUtil.subString(fileName, ".", null, 3);	//获得文件后缀，以便重命名
 		String name=Lang.uuid()+"."+fileSuffix;
-		return upload(path+name, inputStream);
+		return upload(path+name, inputStream, ignoreConstrands);
 	}
 	
 
@@ -456,9 +536,22 @@ public class FileUpload{
 	 * @return  {@link UploadFileVO}
 	 */
 	public UploadFileVO uploadString(String path, String text, String encode){
+		return uploadString(path, text, encode, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 给出文本内容，写出文件
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文本内容
+	 * @param encode 编码格式，可传入 {@link FileUpload#GBK}、{@link FileUpload#UTF8}
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return  {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadString(String path, String text, String encode, boolean ignoreConstrands){
 		try {
 			InputStream inputStream = StringUtil.stringToInputStream(text, encode);
-			return upload(path, inputStream);
+			return upload(path, inputStream, ignoreConstrands);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			UploadFileVO vo = new UploadFileVO();
@@ -473,8 +566,20 @@ public class FileUpload{
 	 * @param text 文本内容
 	 */
 	public UploadFileVO uploadString(String path, String text){
-		return uploadString(path, text, com.xnx3.FileUtil.UTF8);
+		return uploadString(path, text, com.xnx3.FileUtil.UTF8, this.defaultIgnoreConstrands);
 	}
+	
+
+	/**
+	 * 给出文本内容，写出文件。写出UTF－8编码
+	 * @param path 写出的路径,上传后的文件所在的目录＋文件名，如 "jar/file/xnx3.html"
+	 * @param text 文本内容
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 */
+	public UploadFileVO uploadString(String path, String text, boolean ignoreConstrands){
+		return uploadString(path, text, com.xnx3.FileUtil.UTF8, ignoreConstrands);
+	}
+	
 	
 	/**
 	 * 上传图片文件
@@ -485,6 +590,20 @@ public class FileUpload{
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO uploadImage(String path, InputStream inputStream, String fileSuffix, int maxWidth) {
+		return uploadImage(path, inputStream, fileSuffix, maxWidth, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传图片文件
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param inputStream 图片的数据流
+	 * @param fileSuffix 图片的后缀名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadImage(String path, InputStream inputStream, String fileSuffix, int maxWidth, boolean ignoreConstrands) {
 		UploadFileVO vo = new UploadFileVO();
 
 		if(!isAllowUpload(fileSuffix)){
@@ -502,7 +621,7 @@ public class FileUpload{
 			inputStream = ImageUtil.proportionZoom(inputStream, maxWidth, fileSuffix);
 		}
 		
-		return upload(path, "."+fileSuffix, inputStream);
+		return upload(path, "."+fileSuffix, inputStream, ignoreConstrands);
 	}
 	
 	/**
@@ -512,6 +631,17 @@ public class FileUpload{
 	 * @return {@link UploadFileVO}
 	 */
 	public UploadFileVO uploadImage(String path, String imageUrl){
+		return uploadImage(path, imageUrl, this.defaultIgnoreConstrands);
+	}
+	
+	/**
+	 * 上传图片，将网上的图片复制到自己这里。（如果网上图片的URL获取不到后缀，默认用 jpg）
+	 * @param path 上传后的文件所在的目录、路径。 传入格式如： file/images/  会自动给上传的图片重命名保存
+	 * @param imageUrl 网上图片的地址
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO}
+	 */
+	public UploadFileVO uploadImage(String path, String imageUrl, boolean ignoreConstrands){
 		if(imageUrl == null){
 			return null;
 		}
@@ -521,7 +651,7 @@ public class FileUpload{
 			suffix = "jpg";
 		}
 		
-		return upload(path+Lang.uuid()+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix));
+		return upload(path+Lang.uuid()+"."+suffix, ImageUtil.bufferedImageToInputStream(bufferedImage, suffix), ignoreConstrands);
 	}
 	
 	/**

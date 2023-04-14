@@ -30,6 +30,18 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
 	public UploadFileVO upload(String path, MultipartFile multipartFile) {
+		return upload(path, multipartFile, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传文件
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传文件，会自动转化为{@link MultipartFile}保存
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public UploadFileVO upload(String path, MultipartFile multipartFile, boolean ignoreConstrands) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		if(multipartFile == null){
@@ -48,7 +60,7 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 		//定义传上去后保存的文件名
 		String name = Lang.uuid() + "." + Lang.findFileSuffix(multipartFile.getOriginalFilename());
 		
-		vo = upload(path+name, inputStream);
+		vo = upload(path+name, inputStream, ignoreConstrands);
 		return vo;
 	}
 	
@@ -62,6 +74,21 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
 	public UploadFileVO uploadImage(String path, MultipartFile multipartFile, int maxWidth) {
+		return uploadImage(path, multipartFile, maxWidth, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传图片文件。
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * 			<br/><b>注意，这里传入的是路径，不带文件名</b>
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。若传入0.则不启用此功能
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public UploadFileVO uploadImage(String path, MultipartFile multipartFile, int maxWidth, boolean ignoreConstrands) {
 		UploadFileVO vo = new UploadFileVO();
 		
 		if(multipartFile == null){
@@ -83,7 +110,7 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 		String name = Lang.uuid() + "." + fileSuffix;
 		
 		//上传
-		vo = uploadImage(path, inputStream, fileSuffix, maxWidth);
+		vo = uploadImage(path, inputStream, fileSuffix, maxWidth, ignoreConstrands);
 		return vo;
 	}
 	
@@ -96,9 +123,22 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
 	public UploadFileVO uploadImage(String path, MultipartFile multipartFile) {
-		return uploadImage(path, multipartFile, 0);
+		return uploadImage(path, multipartFile, 0, this.defaultIgnoreConstrands);
 	}
 	
+
+	/**
+	 * 上传图片文件
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在目录、路径，如 "jar/file/"
+	 * 			<br/><b>注意，这里传入的是路径，不带文件名</b>
+	 * @param multipartFile SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public UploadFileVO uploadImage(String path, MultipartFile multipartFile, boolean ignoreConstrands) {
+		return uploadImage(path, multipartFile, 0, ignoreConstrands);
+	}
 	
 	/**
 	 * 上传图片文件
@@ -110,13 +150,28 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
 	public UploadFileVO uploadImage(String path,HttpServletRequest request,String formFileName, int maxWidth) {
+		return uploadImage(path, request, formFileName, maxWidth, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * 上传图片文件
+	 * <br/>文件上传上去后，会自动对其进行使用uuid对其命名，将保存的文件信息返回
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传图片文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个图片文件，表单里上传文件的文件名
+	 * @param maxWidth 上传图片的最大宽度，若超过这个宽度，会对图片进行等比缩放为当前宽度。
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public UploadFileVO uploadImage(String path,HttpServletRequest request,String formFileName, int maxWidth, boolean ignoreConstrands) {
 		UploadFileVO uploadFileVO = new UploadFileVO();
 		if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			List<MultipartFile> imageList = multipartRequest.getFiles(formFileName);
 			if(imageList.size()>0 && !imageList.get(0).isEmpty()){
 				MultipartFile multi = imageList.get(0);
-				uploadFileVO = uploadImage(path, multi, maxWidth);
+				uploadFileVO = uploadImage(path, multi, maxWidth, ignoreConstrands);
 			}else{
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
 				uploadFileVO.setInfo("请选择要上传的文件");
@@ -136,13 +191,26 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
 	 */
 	public UploadFileVO upload(String path,HttpServletRequest request,String formFileName) {
+		return upload(path, request, formFileName, this.defaultIgnoreConstrands);
+	}
+	
+
+	/**
+	 * SpringMVC 上传文件，配置允许上传的文件后缀再 systemConfig.xml 的AttachmentFile节点
+	 * @param path 上传后的文件所在的目录、路径，如 "jar/file/"
+	 * @param request SpringMVC接收的 {@link MultipartFile},若是有上传文件，会自动转化为{@link MultipartFile}保存
+	 * @param formFileName form表单上传的单个文件，表单里上传文件的文件名
+	 * @param ignoreConstrands 忽略限制，也就是文件大小、文件后缀名的限制。传入true，则是不再受这些限制条件判断，直接上传
+	 * @return {@link UploadFileVO} 若成功，则上传了文件并且上传成功
+	 */
+	public UploadFileVO upload(String path,HttpServletRequest request,String formFileName, boolean ignoreConstrands) {
 		UploadFileVO uploadFileVO = new UploadFileVO();
 		if (request instanceof MultipartHttpServletRequest) {
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			List<MultipartFile> list = multipartRequest.getFiles(formFileName);
 			if(list.size()>0 && !list.get(0).isEmpty()){
 				MultipartFile multi = list.get(0);
-				uploadFileVO = upload(path, multi);
+				uploadFileVO = upload(path, multi, ignoreConstrands);
 			}else{
 				uploadFileVO.setResult(UploadFileVO.NOTFILE);
 				uploadFileVO.setInfo("请选择要上传的文件");
