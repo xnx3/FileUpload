@@ -44,45 +44,49 @@ public class FileUploadUtil implements CommandLineRunner{
     	}
     	
 		Log.debug(config.toString());
-		if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
-			fileupload.setAllowUploadSuffix(config.getAllowUploadSuffix());
-		}
-		if(config.getDomain() != null && config.getDomain().trim().length() > 0) {
-			fileupload.setDomain(config.getDomain());
-		}
-		if(config.getMaxSize() != null && config.getMaxSize().trim().length() > 0) {
-			fileupload.setMaxFileSize(config.getMaxSize());
-		}
 		
-		if(config.getStorage() != null) {
-			for (Map.Entry<String, Map<String, String>> entry : config.getStorage().entrySet()) {
-				//拼接，取该插件在哪个包
-				String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
-				
-				List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
-				if(classList.size() == 0) {
-					System.err.println("====================");
-					System.err.println(" 【【【 ERROR 】】】    ");
-					System.err.println(" fileupload 未发现 "+storagePackage +" 这个包存在，请确认pom.xml是否加入了这个 storage 支持模块");
-					System.err.println("====================");
-					continue;
-				}
-				
-				//搜索继承StorageInterface接口的
-				List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
-				for (int i = 0; i < storageClassList.size(); i++) {
-					Class storageClass = storageClassList.get(i);
-					Log.debug("fileupload storage : "+storageClass.getName());
-					try {
-						Object newInstance = storageClass.getDeclaredConstructor(Map.class).newInstance(entry.getValue());
-						StorageInterface storage = (StorageInterface) newInstance;
-						fileupload.setStorage(storage);
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException| InvocationTargetException  | NoSuchMethodException | SecurityException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		//v1.3增加
+		fileupload.loadConfig(config);
+		
+//		if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
+//			fileupload.setAllowUploadSuffix(config.getAllowUploadSuffix());
+//		}
+//		if(config.getDomain() != null && config.getDomain().trim().length() > 0) {
+//			fileupload.setDomain(config.getDomain());
+//		}
+//		if(config.getMaxSize() != null && config.getMaxSize().trim().length() > 0) {
+//			fileupload.setMaxFileSize(config.getMaxSize());
+//		}
+//		
+//		if(config.getStorage() != null) {
+//			for (Map.Entry<String, Map<String, String>> entry : config.getStorage().entrySet()) {
+//				//拼接，取该插件在哪个包
+//				String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
+//				
+//				List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
+//				if(classList.size() == 0) {
+//					System.err.println("====================");
+//					System.err.println(" 【【【 ERROR 】】】    ");
+//					System.err.println(" fileupload 未发现 "+storagePackage +" 这个包存在，请确认pom.xml是否加入了这个 storage 支持模块");
+//					System.err.println("====================");
+//					continue;
+//				}
+//				
+//				//搜索继承StorageInterface接口的
+//				List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
+//				for (int i = 0; i < storageClassList.size(); i++) {
+//					Class storageClass = storageClassList.get(i);
+//					Log.debug("fileupload storage : "+storageClass.getName());
+//					try {
+//						Object newInstance = storageClass.getDeclaredConstructor(Map.class).newInstance(entry.getValue());
+//						StorageInterface storage = (StorageInterface) newInstance;
+//						fileupload.setStorage(storage);
+//					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException| InvocationTargetException  | NoSuchMethodException | SecurityException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}
     }
     
 	/**
@@ -351,7 +355,11 @@ public class FileUploadUtil implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		Log.debug("load fileupload config by application.properties / yml : "+this.fildUploadApplicationConfig);
-    	loadConfig(this.fildUploadApplicationConfig);
+    	try {
+    		loadConfig(this.fildUploadApplicationConfig);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

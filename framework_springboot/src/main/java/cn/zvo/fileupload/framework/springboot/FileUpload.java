@@ -4,17 +4,19 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.xnx3.Lang;
+import com.xnx3.Log;
+import com.xnx3.ScanClassUtil;
 import com.xnx3.UrlUtil;
-
+import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
@@ -268,4 +270,56 @@ public class FileUpload extends cn.zvo.fileupload.FileUpload {
 		}
 	}
 	
+
+    /**
+     * 加载配置 {@link ApplicationConfig} 文件，通过其属性来决定使用何种配置。
+     * <br>这个其实就相当于用java代码来动态决定配置
+     * @param config
+     */
+    public void loadConfig(ApplicationConfig config) {
+    	if(config == null) {
+    		return;
+    	}
+
+    	if(config.getAllowUploadSuffix() != null && config.getAllowUploadSuffix().trim().length() > 0) {
+			this.setAllowUploadSuffix(config.getAllowUploadSuffix());
+		}
+		if(config.getDomain() != null && config.getDomain().trim().length() > 0) {
+			this.setDomain(config.getDomain());
+		}
+		if(config.getMaxSize() != null && config.getMaxSize().trim().length() > 0) {
+			this.setMaxFileSize(config.getMaxSize());
+		}
+		
+		if(config.getStorage() != null) {
+			for (Map.Entry<String, Map<String, String>> entry : config.getStorage().entrySet()) {
+				//拼接，取该插件在哪个包
+				String storagePackage = "cn.zvo.fileupload.storage."+entry.getKey();
+				
+				List<Class<?>> classList = ScanClassUtil.getClasses(storagePackage);
+				if(classList.size() == 0) {
+					System.err.println("====================");
+					System.err.println(" 【【【 ERROR 】】】    ");
+					System.err.println(" fileupload 未发现 "+storagePackage +" 这个包存在，请确认pom.xml是否加入了这个 storage 支持模块");
+					System.err.println("====================");
+					continue;
+				}
+				
+				//搜索继承StorageInterface接口的
+				List<Class<?>> storageClassList = ScanClassUtil.searchByInterfaceName(classList, "cn.zvo.fileupload.StorageInterface");
+				for (int i = 0; i < storageClassList.size(); i++) {
+					Class storageClass = storageClassList.get(i);
+					Log.debug("fileupload storage : "+storageClass.getName());
+					try {
+						Object newInstance = storageClass.getDeclaredConstructor(Map.class).newInstance(entry.getValue());
+						StorageInterface storage = (StorageInterface) newInstance;
+						this.setStorage(storage);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException| InvocationTargetException  | NoSuchMethodException | SecurityException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+    }
+    
 }
