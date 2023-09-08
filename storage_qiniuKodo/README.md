@@ -1,0 +1,1 @@
+七牛云云存储，已转移至七牛云github专用仓库进行维护，仓库链接：  [https://github.com/xnx3/fileupload-storage-qiniucloudKodo](https://github.com/xnx3/fileupload-storage-qiniucloudKodo)
