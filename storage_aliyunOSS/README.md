@@ -87,7 +87,7 @@ System.out.println(vo);	//打印结果
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-framework-springboot</artifactId>
-    <version>1.1</version>
+    <version>1.3.1</version>
 </dependency> 
 ````
 
