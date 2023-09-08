@@ -31,7 +31,7 @@ UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-no
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 <!-- 加入阿里云OSS存储相关实现 -->
 <dependency> 
@@ -75,7 +75,7 @@ System.out.println(vo);	//打印结果
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <<artifactId>fileupload-core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 <!-- 加入阿里云OSS存储相关实现 -->
 <dependency> 

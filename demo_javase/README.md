@@ -8,7 +8,7 @@
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ````
 
