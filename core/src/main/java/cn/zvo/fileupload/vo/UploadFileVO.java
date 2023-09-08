@@ -84,7 +84,9 @@ public class UploadFileVO extends BaseVO {
 
 	@Override
 	public String toString() {
-		return "UploadFileVO [name=" + name + ", path=" + path + ", url=" + url + ", size=" + size + "]";
+		return "UploadFileVO [name=" + name + ", path=" + path + ", url=" + url + ", size=" + size + ", getResult()="
+				+ getResult() + ", getInfo()=" + getInfo() + "]";
 	}
+
 	
 }
