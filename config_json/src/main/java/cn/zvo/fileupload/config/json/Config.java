@@ -125,8 +125,7 @@ public class Config {
 		}
 		
 		JSONObject config = jsonObj.getJSONObject("config");
-		
-		return BaseVO.success();
+		return configStorageInterface.save(key, json);
 	}
 	
 	/**
@@ -157,6 +156,7 @@ public class Config {
 			vo.setBaseVO(StorageVO.FAILURE, "未发现配置中的 storage 属性");
 			return vo;
 		}
+		vo.setJson(json);
 		
 		//存储的类名
 		String storageClassName = json.getString("storage");
@@ -172,7 +172,7 @@ public class Config {
 		// 遍历 JSONObject 对象的键
         for (Object configKeyObj : configJson.keySet()) {
         	String ckey = configKeyObj.toString();
-            System.out.println(ckey);
+            //System.out.println(ckey);
             configMap.put(ckey, configJson.getString(ckey));
         }
 		
@@ -182,6 +182,14 @@ public class Config {
         	vo.setBaseVO(StorageVO.FAILURE, "Storage对象初始化失败");
         }
 		return vo;
+	}
+
+	public ConfigStorageInterface getConfigStorageInterface() {
+		return configStorageInterface;
+	}
+
+	public void setConfigStorageInterface(ConfigStorageInterface configStorageInterface) {
+		this.configStorageInterface = configStorageInterface;
 	}
 	
 }
