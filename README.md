@@ -86,6 +86,11 @@ fileUpload.setStorage(new HuaweicloudOBSStorage(key, secret, endpoint, obsname))
 仅此区别。  
 具体SpringBoot的使用，可参考： [framework_springboot/README.md](framework_springboot/)
 
+## 扩展-用户自定义存储的场景
+
+比如我有一个建站平台，可以开通多个网站。每个网站都可以单独设置它自己的存储方式、以及生成网站html静态文件的保存方式，比如有的建站人员习惯ftp、有的建站人员习惯华为云OBS云存储，那么可以使用本项目的能力，有网站用户自行决定采用哪种存储方式。而多种多样的存储方式，无需建站平台本身进行代码的判断、适配等繁琐的工作！  
+有关这种场景，可以参考： https://gitee.com/mail_osc/FileUpload/tree/main/config_json
+
 ## 交流及参与贡献
 作者：管雷鸣
 微信：xnx3com
