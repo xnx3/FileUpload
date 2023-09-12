@@ -19,6 +19,78 @@
 * **storage** 是当前使用的是那种存储方式，存的是包名
 * **config** 是这种存储方式要设置哪些参数。这里是本地存储，所以要设置path本地存储的路径。其他比如ftp存储，还要设置用户名、密码、host、存储路径等。不同的存储方式设置的参数也是不同的
 
+## 支持的存储方式
+#### 本地存储
+````
+{
+    "storage":"cn.zvo.fileupload.storage.local.LocalStorage",
+    "config":{
+        "path":"/mnt/tomcat8/logs/"
+    }
+}
+````
+
+#### 华为云OBS存储
+
+````
+{
+    "storage":"cn.zvo.fileupload.storage.huaweicloudOBS.HuaweicloudOBSStorage",
+    "config":{
+        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
+        "accessKeySecret":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
+        "obsname":"testname",
+        "endpoint":"obs.cn-north-4.myhuaweicloud.com"
+    }
+}
+````
+其中 config 中的参数说明，参考华为云开发者组织仓库中FileUpload的 [2.2 参数配置](https://gitee.com/HuaweiCloudDeveloper/file-upload#22-%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE)
+
+#### 阿里云OSS存储
+````
+{
+    "storage":"cn.zvo.fileupload.storage.aliyunOSS.AliyunOSSStorage",
+    "config":{
+        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
+        "secretAccessKey":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
+        "bucketname":"testname",
+        "endpoint":"oss-cn-hongkong.aliyuncs.com"
+    }
+}
+````
+其中 config 中的参数说明，参考FileUpload的 [2.2 参数配置](https://gitee.com/mail_osc/FileUpload/tree/main/storage_aliyunOSS#22-%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8)
+
+#### 七牛云Kodo存储
+````
+{
+    "storage":"cn.zvo.fileupload.storage.qiniuKodo.QiniuKodoStorage",
+    "config":{
+        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
+        "accessKeySecret":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
+        "bucketName":"testname",
+        "domain":"www.xxxx.com"
+    }
+}
+````
+其中 config 中的参数说明，参考FileUpload的 [2.2 参数配置](https://github.com/xnx3/fileupload-storage-qiniucloudKodo#22-%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE)
+
+#### SFTP方式存储
+
+````
+{
+    "storage":"cn.zvo.fileupload.storage.sftp.SftpStorage",
+    "config":{
+        "host":"12.12.12.12",
+        "username":"root",
+        "password":"123456",
+        "port":"22",
+        "directory":"/root/"
+    }
+}
+````
+其中 config 中的参数说明，参考： 
+[https://github.com/xnx3/FileUpload/tree/main/storage_sftp](https://github.com/xnx3/FileUpload/tree/main/storage_sftp)
+
+
 ## 代码示例
 
 ````
@@ -98,74 +170,3 @@ json格式的配置文件保存结果：BaseVO [result=1, info=SUCCESS] 	 cn.zvo
 UploadFileVO [name=1.txt, path=a/b/1.txt, url=null, size=3, getResult()=1, getInfo()=success] 	 cn.zvo.fileupload.config.json.Demo.main() 56 Line
 
 ````
-
-## 支持的存储方式
-#### 本地存储
-````
-{
-    "storage":"cn.zvo.fileupload.storage.local.LocalStorage",
-    "config":{
-        "path":"/mnt/tomcat8/logs/"
-    }
-}
-````
-
-#### 华为云OBS存储
-
-````
-{
-    "storage":"cn.zvo.fileupload.storage.huaweicloudOBS.HuaweicloudOBSStorage",
-    "config":{
-        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
-        "accessKeySecret":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
-        "obsname":"testname",
-        "endpoint":"obs.cn-north-4.myhuaweicloud.com"
-    }
-}
-````
-其中 config 中的参数说明，参考华为云开发者组织仓库中FileUpload的 [2.2 参数配置](https://gitee.com/HuaweiCloudDeveloper/file-upload#22-%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE)
-
-#### 阿里云OSS存储
-````
-{
-    "storage":"cn.zvo.fileupload.storage.aliyunOSS.AliyunOSSStorage",
-    "config":{
-        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
-        "secretAccessKey":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
-        "bucketname":"testname",
-        "endpoint":"oss-cn-hongkong.aliyuncs.com"
-    }
-}
-````
-其中 config 中的参数说明，参考FileUpload的 [2.2 参数配置](https://gitee.com/mail_osc/FileUpload/tree/main/storage_aliyunOSS#22-%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8)
-
-#### 七牛云Kodo存储
-````
-{
-    "storage":"cn.zvo.fileupload.storage.qiniuKodo.QiniuKodoStorage",
-    "config":{
-        "accessKeyId":"H0TPUBC6YDZxxxxxxxx",
-        "accessKeySecret":"je56lHuJ62VOhoSXxsfI9InmPAtVY9xxxxxxx",
-        "bucketName":"testname",
-        "domain":"www.xxxx.com"
-    }
-}
-````
-其中 config 中的参数说明，参考FileUpload的 [2.2 参数配置](https://github.com/xnx3/fileupload-storage-qiniucloudKodo#22-%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE)
-
-#### SFTP方式存储
-
-````
-{
-    "storage":"cn.zvo.fileupload.storage.sftp.SftpStorage",
-    "config":{
-        "host":"12.12.12.12",
-        "username":"root",
-        "password":"123456",
-        "port":"22",
-        "directory":"/root/"
-    }
-}
-````
-其中 config 中的参数说明，参考： 
-[https://github.com/xnx3/FileUpload/tree/main/storage_sftp](https://github.com/xnx3/FileUpload/tree/main/storage_sftp)
