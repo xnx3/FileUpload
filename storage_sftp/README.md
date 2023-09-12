@@ -1,7 +1,7 @@
 将文件上传存储到SFTP中。  
 sftp是linux系统自带的，所以买个最便宜的linux系统服务器，比如centos，也就自带了sftp能力。  
 
-## 传入参数
+## 参数说明
 
 * **host** 主机，如 127.0.0.1
 * **username** 用户名，如 root

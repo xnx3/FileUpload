@@ -156,5 +156,16 @@ UploadFileVO [name=1.txt, path=a/b/1.txt, url=null, size=3, getResult()=1, getIn
 #### SFTP方式存储
 
 ````
-
+{
+    "storage":"cn.zvo.fileupload.storage.sftp.SftpStorage",
+    "config":{
+        "host":"12.12.12.12",
+        "username":"root",
+        "password":"123456",
+        "port":"22",
+        "directory":"/root/"
+    }
+}
 ````
+其中 config 中的参数说明，参考： 
+[https://github.com/xnx3/FileUpload/tree/main/storage_sftp](https://github.com/xnx3/FileUpload/tree/main/storage_sftp)
