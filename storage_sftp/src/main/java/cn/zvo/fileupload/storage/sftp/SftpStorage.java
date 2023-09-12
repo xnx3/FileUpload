@@ -32,6 +32,7 @@ public class SftpStorage implements StorageInterface {
 	 *  	<li>username: 用户名，如 root</li>
 	 *  	<li>password: 密码</li>
 	 * 		<li>port: 端口号，如 22 ，如果不传默认就是22</li>
+	 *  	<li>directory:  操作的目录，比如 /root/ 如果不传入，默认是 / 也就是根目录。但要注意该账号要对此目录有读写权限！貌似除了root账号能有根目录权限外，其他别的账号可能操作不了根目录 </li>
 	 *  </ul>
 	 */
 	public SftpStorage(Map<String, String> map) {
