@@ -129,25 +129,14 @@ public class Config {
 	}
 	
 	/**
-	 * 根据key获取其 Storage 存储对象
-	 * @param key 唯一标识，因为可能会出现多种存储情况，所以每个key可以对应一个存储方式
-	 * @return 如果有这种存储并且正常new出来了，那么返回具体存储对象。否则返回null
+	 * 传入 config 的字符串配置数据，返回 StorageVO
+	 * @param configString json格式的字符串配置
+	 * @return
 	 */
-	public StorageVO get(String key){
+	public static StorageVO configToStorageVO(String configString) {
 		StorageVO vo = new StorageVO();
 		
-		BaseVO configStorageVO = configStorageInterface.get(key);
-		if(configStorageVO == null) {
-			vo.setBaseVO(StorageVO.FAILURE, "未发现配置文件存在");
-			return vo;
-		}
-		if(configStorageVO.getResult() - BaseVO.FAILURE == 0) {
-			vo.setBaseVO(StorageVO.FAILURE, configStorageVO.getInfo());
-			return vo;
-		}
-		
-		String jsonString = configStorageVO.getInfo();
-		JSONObject json = JSONObject.fromObject(jsonString);
+		JSONObject json = JSONObject.fromObject(configString);
 		if(json.get("config") == null) {
 			vo.setBaseVO(StorageVO.FAILURE, "未发现配置中的 config 属性");
 			return vo;
@@ -182,6 +171,28 @@ public class Config {
         	vo.setBaseVO(StorageVO.FAILURE, "Storage对象初始化失败");
         }
 		return vo;
+	}
+	
+	/**
+	 * 根据key获取其 Storage 存储对象
+	 * @param key 唯一标识，因为可能会出现多种存储情况，所以每个key可以对应一个存储方式
+	 * @return 如果有这种存储并且正常new出来了，那么返回具体存储对象。否则返回null
+	 */
+	public StorageVO get(String key){
+		StorageVO vo = new StorageVO();
+		
+		BaseVO configStorageVO = configStorageInterface.get(key);
+		if(configStorageVO == null) {
+			vo.setBaseVO(StorageVO.FAILURE, "未发现配置文件存在");
+			return vo;
+		}
+		if(configStorageVO.getResult() - BaseVO.FAILURE == 0) {
+			vo.setBaseVO(StorageVO.FAILURE, configStorageVO.getInfo());
+			return vo;
+		}
+		
+		String jsonString = configStorageVO.getInfo();
+		return configToStorageVO(jsonString);
 	}
 
 	public ConfigStorageInterface getConfigStorageInterface() {
