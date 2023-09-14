@@ -1,0 +1,71 @@
+<html>
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+<body>
+<script src="https://res.zvo.cn/request/request.js"></script>
+<script src="https://res.zvo.cn/msg/msg.js"></script>
+<script src="https://res.zvo.cn/from/from.js"></script>
+<script src="./fileupload-config.js"></script>
+	
+<style>
+	/* input输入框前面的文字 */
+	.storage_label{ width:5rem; display: inline-block; }
+	/* input输入框 */
+	#storage_param div input{ }
+	/* input是否必填 - 非必填 */
+	.storage_param_false{ display:none; }
+	/* input是否必填 - 必填 */
+	.storage_param_true{ color:red; }
+</style>
+<div id="from">
+	<div>
+		<label class="storage_label">存储方式：</label>
+		<select id="storageSelect" name="storage_select" onchange="fileupload.config.renderStorageParam(this.value);">
+			<!-- 这里面的值是动态赋予的,这里先写死模拟 storageList.id -->
+			<option value="cn.zvo.fileupload.storage.local.LocalStorage">本地存储</option>
+			<option value="cn.zvo.fileupload.storage.sftp.SftpStorage">SFTP</option>
+		</select>
+	</div>
+	
+	<div id="storage_param">
+		<div>
+			<label class="storage_label" title="{description}">{name}:</label>
+			<input type="text" name="{id}" value="{defaultValue}" placeholder="{description}" title="{description}" class="storage_param_{id}" />
+			<span class="storage_param_{require}">*</span>
+		</div>
+	</div>
+</div>
+	
+<button onclick="submit();">提交</button>
+<button onclick="fill();">填充</button>
+
+<script>
+//接口请求，获取 FileUpload 的所有配置参数
+request.get('http://leimingyun.e3.luyouxia.net:14751/config.json',{}, function(data){
+	//初始化配置信息
+	fileupload.config.initConfigData(data);
+	
+	//这里默认让它显示第一个存储方式
+	fileupload.config.renderStorageParam(data.storageList[0].id);
+});
+
+
+function submit(){
+	var data = from.getJsonData('from');
+	console.log(data);
+}
+
+function fill(){
+	var data = {
+			'storage_select':'cn.zvo.fileupload.storage.local.LocalStorage',
+			'path':'12'
+	};
+	from.fill('from',data);
+	from.fill('from',data);
+}
+
+</script>
+</body>
+</html>

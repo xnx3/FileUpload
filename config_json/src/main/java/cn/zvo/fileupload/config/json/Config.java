@@ -11,7 +11,10 @@ import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
 
 import cn.zvo.fileupload.StorageInterface;
+import cn.zvo.fileupload.config.json.vo.ConfigVO;
 import cn.zvo.fileupload.config.json.vo.StorageVO;
+import cn.zvo.fileupload.config.json.vo.bean.Storage;
+import cn.zvo.fileupload.vo.StorageConfigVO;
 import net.sf.json.JSONObject;
 
 /**
@@ -56,6 +59,44 @@ public class Config {
 		}
 		return false;
 	}
+	
+	/**
+	 * 获取当前项目中存在的 Storage 存储方式
+	 * @return 返回的是 storage 存储方式的包名
+	 */
+	public static ConfigVO getAllStorage() {
+		if(allStorageConfigParam != null) {
+			return allStorageConfigParam;
+		}
+		
+		allStorageConfigParam = new ConfigVO();
+		
+		for(int i = 0; i < storageList.size(); i++) {
+			Storage storage = new Storage();
+			
+			String storagePackageName = storageList.get(i).getName();
+			storage.setId(storagePackageName);
+			StorageInterface storageInterface = newStorage(storagePackageName, new HashMap<String, String>());
+			
+			StorageConfigVO vo = storageInterface.config();
+			if(vo == null) {
+				Log.error(storagePackageName+" 未实现 config() 方法！未能取到此 Storage 的实例化需要的传入参数");
+				continue;
+			}
+			if(vo.getResult() - StorageConfigVO.FAILURE == 0) {
+				Log.error(storagePackageName+" 实现的 config() 方法获取异常，未能取到此 Storage 的实例化需要的传入参数。 异常信息："+vo.getInfo());
+				continue;
+			}
+			storage.setParamList(vo.getParamList());
+			storage.setDescription(vo.getDescription());
+			storage.setName(vo.getName());
+			
+			allStorageConfigParam.getStorageList().add(storage);
+		}
+		
+		return allStorageConfigParam;
+	}
+	public static ConfigVO allStorageConfigParam;
 	
 	/**
 	 * 创建 Storage 存储对象

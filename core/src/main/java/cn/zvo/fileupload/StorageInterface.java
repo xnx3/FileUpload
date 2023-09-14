@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.List;
 import com.xnx3.BaseVO;
 import cn.zvo.fileupload.bean.SubFileBean;
+import cn.zvo.fileupload.storage.local.LocalStorage;
+import cn.zvo.fileupload.vo.StorageConfigVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
 
 /**
@@ -70,4 +72,11 @@ public interface StorageInterface {
 	 * @param path 要创建的文件路径，传入如 site/219/ 则是创建 test 文件夹
 	 */
 	public BaseVO createFolder(String path);
+	
+	/**
+	 * 实现该 {@link StorageInterface} 的存储，其需要进行哪些参数配置，比如本地存储 {@link LocalStorage} 需要配置 path 存储路径参数
+	 * @return 需要进行配置的参数
+	 */
+	public StorageConfigVO config();
+	
 }

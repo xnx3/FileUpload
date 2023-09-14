@@ -17,7 +17,9 @@ import com.xnx3.Log;
 import com.xnx3.StringUtil;
 import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
+import cn.zvo.fileupload.vo.StorageConfigVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
+import cn.zvo.fileupload.vo.bean.Param;
 
 /**
  * 附件上传之 服务器本身存储，服务器本地存储，附件存储到服务器硬盘上
@@ -361,5 +363,15 @@ public class LocalStorage implements StorageInterface{
         }
 
     }
+
+	@Override
+	public StorageConfigVO config() {
+		StorageConfigVO vo = new StorageConfigVO();
+		vo.setName("本地存储");
+		vo.setDescription("将上传文件存储到本服务器磁盘进行存储");
+		vo.getParamList().add(new Param("path", "路径", "文件上传到服务器的路径，将上传的文件保存到哪个目录，格式如 /mnt/tomcat8/site/123/", true, ""));
+		
+		return vo;
+	}
 
 }

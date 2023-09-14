@@ -14,7 +14,9 @@ import com.xnx3.UrlUtil;
 import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
 import cn.zvo.fileupload.storage.sftp.bean.PathBean;
+import cn.zvo.fileupload.vo.StorageConfigVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
+import cn.zvo.fileupload.vo.bean.Param;
 
 /**
  * 文件上传之 华为云 OBS 
@@ -220,7 +222,20 @@ public class SftpStorage implements StorageInterface {
 		PathBean bean = new PathBean();
 		bean.setFileName(fileName);
 		bean.setPath(sftpPath);
-		System.out.println(bean);
 		return bean;
+	}
+
+	@Override
+	public StorageConfigVO config() {
+		StorageConfigVO vo = new StorageConfigVO();
+		vo.setName("SFTP");
+		vo.setDescription("将文件存储到指定的SFTP空间中");
+		vo.getParamList().add(new Param("host", "主机", "格式如 127.0.0.1", true, ""));
+		vo.getParamList().add(new Param("username", "用户名", "用户名，如 root", true, ""));
+		vo.getParamList().add(new Param("password", "密码", "登陆密码，如果未设置密码可留空", false, ""));
+		vo.getParamList().add(new Param("port", "端口号", "如 22", false, "22"));
+		vo.getParamList().add(new Param("directory", "上传目录", "操作的目录，比如 /root/  如果不传入，默认是 / 也就是根目录。但要注意该账号要对此目录有读写权限！貌似除了root账号能有根目录权限外，其他别的账号可能操作不了根目录", false, "/"));
+		
+		return vo;
 	}
 }
