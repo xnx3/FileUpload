@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.zvo.fileupload</groupId>
-	<artifactId>fileupload-config-json</artifactId>
+	<artifactId>fileupload-config</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 

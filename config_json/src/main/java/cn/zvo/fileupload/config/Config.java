@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.config.json;
+package cn.zvo.fileupload.config;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -9,11 +9,13 @@ import java.util.Map;
 import com.xnx3.BaseVO;
 import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
+import com.xnx3.json.JSONUtil;
 
 import cn.zvo.fileupload.StorageInterface;
-import cn.zvo.fileupload.config.json.vo.ConfigVO;
-import cn.zvo.fileupload.config.json.vo.StorageVO;
-import cn.zvo.fileupload.config.json.vo.bean.Storage;
+import cn.zvo.fileupload.config.vo.ConfigVO;
+import cn.zvo.fileupload.config.vo.StorageVO;
+import cn.zvo.fileupload.config.vo.bean.Custom;
+import cn.zvo.fileupload.config.vo.bean.Storage;
 import cn.zvo.fileupload.vo.StorageConfigVO;
 import net.sf.json.JSONObject;
 
@@ -24,7 +26,7 @@ import net.sf.json.JSONObject;
  */
 public class Config {
 	//配置数据持久化存储的方式
-	public ConfigStorageInterface configStorageInterface;
+	public static ConfigStorageInterface configStorageInterface;
 	public static List<Class<?>> storageList; //当前有哪些存储方式，比如本地存储，华为云OBS存储等
 	
 	static {
@@ -61,42 +63,68 @@ public class Config {
 	}
 	
 	/**
+	 * 获取当前项目中存在的所有 Storage 存储方式、以及当前用户自定义的存储配置。
+	 * 此适合配合 fileupload-config.js 一起使用效果最佳
+	 * @return {@link ConfigVO}
+	 */
+	public static ConfigVO getAllStorage(String key) {
+		getAllStorage();	//初始化，避免是第一次，还没有 static configVO
+		
+		ConfigVO vo = new ConfigVO();
+		vo.setStorageList(configVO.getStorageList());
+		
+		//取当前这个用户自定义的存储设置
+		BaseVO storageVO = configStorageInterface.get(key);
+		if(storageVO.getResult() - BaseVO.FAILURE == 0) {
+			//失败
+			configVO.setBaseVO(ConfigVO.FAILURE, storageVO.getInfo());
+		}else {
+			//成功
+			JSONObject json = JSONObject.fromObject(storageVO.getInfo());
+			Custom custom = new Custom();
+			custom.setStorage(JSONUtil.getString(json, "storage"));
+			custom.setConfig(json.getJSONObject("config"));
+			vo.setCustom(custom);
+		}
+		return vo;
+	}
+	
+	/**
 	 * 获取当前项目中存在的 Storage 存储方式
-	 * @return 返回的是 storage 存储方式的包名
+	 * @return 返回的是所有的存储方式 {@link ConfigVO} 注意，这个ConfigVO中的 custom 是不会赋予内容的，如果需要赋予内容，此方法需要传入 key
 	 */
 	public static ConfigVO getAllStorage() {
-		if(allStorageConfigParam != null) {
-			return allStorageConfigParam;
+		if(configVO == null) {
+			//需要初始化
+			configVO = new ConfigVO();
+			
+			for(int i = 0; i < storageList.size(); i++) {
+				Storage storage = new Storage();
+				
+				String storagePackageName = storageList.get(i).getName();
+				storage.setId(storagePackageName);
+				StorageInterface storageInterface = newStorage(storagePackageName, new HashMap<String, String>());
+				
+				StorageConfigVO vo = storageInterface.config();
+				if(vo == null) {
+					Log.error(storagePackageName+" 未实现 config() 方法！未能取到此 Storage 的实例化需要的传入参数");
+					continue;
+				}
+				if(vo.getResult() - StorageConfigVO.FAILURE == 0) {
+					Log.error(storagePackageName+" 实现的 config() 方法获取异常，未能取到此 Storage 的实例化需要的传入参数。 异常信息："+vo.getInfo());
+					continue;
+				}
+				storage.setParamList(vo.getParamList());
+				storage.setDescription(vo.getDescription());
+				storage.setName(vo.getName());
+				
+				configVO.getStorageList().add(storage);
+			}
 		}
 		
-		allStorageConfigParam = new ConfigVO();
-		
-		for(int i = 0; i < storageList.size(); i++) {
-			Storage storage = new Storage();
-			
-			String storagePackageName = storageList.get(i).getName();
-			storage.setId(storagePackageName);
-			StorageInterface storageInterface = newStorage(storagePackageName, new HashMap<String, String>());
-			
-			StorageConfigVO vo = storageInterface.config();
-			if(vo == null) {
-				Log.error(storagePackageName+" 未实现 config() 方法！未能取到此 Storage 的实例化需要的传入参数");
-				continue;
-			}
-			if(vo.getResult() - StorageConfigVO.FAILURE == 0) {
-				Log.error(storagePackageName+" 实现的 config() 方法获取异常，未能取到此 Storage 的实例化需要的传入参数。 异常信息："+vo.getInfo());
-				continue;
-			}
-			storage.setParamList(vo.getParamList());
-			storage.setDescription(vo.getDescription());
-			storage.setName(vo.getName());
-			
-			allStorageConfigParam.getStorageList().add(storage);
-		}
-		
-		return allStorageConfigParam;
+		return configVO;
 	}
-	public static ConfigVO allStorageConfigParam;
+	public static ConfigVO configVO;
 	
 	/**
 	 * 创建 Storage 存储对象
@@ -165,7 +193,7 @@ public class Config {
 			return BaseVO.failure("请设置 config");
 		}
 		
-		JSONObject config = jsonObj.getJSONObject("config");
+		//JSONObject config = jsonObj.getJSONObject("config");
 		return configStorageInterface.save(key, json);
 	}
 	
@@ -237,11 +265,11 @@ public class Config {
 	}
 
 	public ConfigStorageInterface getConfigStorageInterface() {
-		return configStorageInterface;
+		return Config.configStorageInterface;
 	}
 
-	public void setConfigStorageInterface(ConfigStorageInterface configStorageInterface) {
-		this.configStorageInterface = configStorageInterface;
+	public static void setConfigStorageInterface(ConfigStorageInterface configStorageInterface) {
+		Config.configStorageInterface = configStorageInterface;
 	}
 	
 }

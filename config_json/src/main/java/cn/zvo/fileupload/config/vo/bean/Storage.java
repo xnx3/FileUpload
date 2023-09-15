@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.config.json.vo.bean;
+package cn.zvo.fileupload.config.vo.bean;
 
 import java.util.List;
 import cn.zvo.fileupload.vo.bean.Param;

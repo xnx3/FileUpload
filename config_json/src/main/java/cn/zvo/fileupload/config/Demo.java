@@ -1,11 +1,11 @@
-package cn.zvo.fileupload.config.json;
+package cn.zvo.fileupload.config;
 
 import com.xnx3.BaseVO;
 import com.xnx3.FileUtil;
 import com.xnx3.Log;
 import cn.zvo.fileupload.FileUpload;
 import cn.zvo.fileupload.StorageInterface;
-import cn.zvo.fileupload.config.json.vo.StorageVO;
+import cn.zvo.fileupload.config.vo.StorageVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
 import net.sf.json.JSONObject;
 

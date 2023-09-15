@@ -1,4 +1,4 @@
-package cn.zvo.fileupload.config.json.vo;
+package cn.zvo.fileupload.config.vo;
 
 import com.xnx3.BaseVO;
 

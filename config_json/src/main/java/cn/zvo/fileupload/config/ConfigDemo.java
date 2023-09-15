@@ -1,6 +1,6 @@
-package cn.zvo.fileupload.config.json;
+package cn.zvo.fileupload.config;
 
-import cn.zvo.fileupload.config.json.vo.ConfigVO;
+import cn.zvo.fileupload.config.vo.ConfigVO;
 
 
 public class ConfigDemo {
