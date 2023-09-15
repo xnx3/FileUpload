@@ -20,7 +20,7 @@ public interface ConfigStorageInterface {
 	/**
 	 * 从持久化存储中取出自定义的存储设置
 	 * @param  key 也就是唯一标识符，比如 uuid 等。 场景比如，建站系统中每个网站都可以设置自己的存储方式，那这里便是某个网站的唯一标识
-	 * @return BaseVO.info 中便是自定义的存储设置
+	 * @return BaseVO.info 中便是自定义的存储设置。如果用户是第一次使用，那这里是获取不到值的，那么这种情况result也要返回成功，只不过info返回null或者空字符串即可
 	 */
 	public BaseVO get(String key);
 }

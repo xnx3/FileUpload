@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.xnx3.BaseVO;
+import com.xnx3.FileUtil;
 import com.xnx3.Log;
 import com.xnx3.ScanClassUtil;
 import com.xnx3.json.JSONUtil;
@@ -65,7 +66,7 @@ public class Config {
 	/**
 	 * 获取当前项目中存在的所有 Storage 存储方式、以及当前用户自定义的存储配置。
 	 * 此适合配合 fileupload-config.js 一起使用效果最佳
-	 * @return {@link ConfigVO}
+	 * @return {@link ConfigVO} 其中 custom 字段，如果用户是第一次使用，那这里是获取不到值的，那么这种情况result也要返回成功，只不过custom字段会返回null，里面是不会有值的
 	 */
 	public static ConfigVO getAllStorage(String key) {
 		getAllStorage();	//初始化，避免是第一次，还没有 static configVO
@@ -77,7 +78,7 @@ public class Config {
 		BaseVO storageVO = configStorageInterface.get(key);
 		if(storageVO.getResult() - BaseVO.FAILURE == 0) {
 			//失败
-			configVO.setBaseVO(ConfigVO.FAILURE, storageVO.getInfo());
+			vo.setBaseVO(ConfigVO.FAILURE, storageVO.getInfo());
 		}else {
 			//成功
 			JSONObject json = JSONObject.fromObject(storageVO.getInfo());
@@ -180,13 +181,16 @@ public class Config {
 	 * config 是这种存储方式要设置哪些参数。这里是本地存储，所以要设置path本地存储的路径。其他比如ftp存储，还要设置用户名、密码、host、存储路径等。不同的存储方式设置的参数也是不同的
 	 * 
 	 */
-	public BaseVO save(String key, String json){
+	public static BaseVO save(String key, String json){
 		BaseVO vo = new BaseVO();
 		
 		JSONObject jsonObj = JSONObject.fromObject(json);
 		String storage = jsonObj.getString("storage");
 		if(storage == null || storage.length() < 1) {
 			return BaseVO.failure("请设置storage");
+		}
+		if(!Config.isExit(storage)) {
+			return BaseVO.failure("当前系统中并未有此存储："+storage);
 		}
 		
 		if(jsonObj.get("config") == null) {
@@ -247,7 +251,7 @@ public class Config {
 	 * @param key 唯一标识，因为可能会出现多种存储情况，所以每个key可以对应一个存储方式
 	 * @return 如果有这种存储并且正常new出来了，那么返回具体存储对象。否则返回null
 	 */
-	public StorageVO get(String key){
+	public static StorageVO get(String key){
 		StorageVO vo = new StorageVO();
 		
 		BaseVO configStorageVO = configStorageInterface.get(key);
@@ -264,7 +268,33 @@ public class Config {
 		return configToStorageVO(jsonString);
 	}
 
-	public ConfigStorageInterface getConfigStorageInterface() {
+	public static ConfigStorageInterface getConfigStorageInterface() {
+		if(Config.configStorageInterface == null) {
+			//未设置，默认赋予一个
+			Log.info("检测到您未实现 ConfigStorageInterface 接口，系统已默认用本地存储实现了此接口，以便调试。强烈建议您自行实现此接口");
+			
+			//设置 json 配置存放的方式，比如用户a选择使用华为云存储，华为云ak相关的是啥，进行的持久化存储相关，也就是保存、取得这个。 这里用于演示所以使用一个简单的以文件方式进行存储的
+			Config.setConfigStorageInterface(new ConfigStorageInterface() {
+				private String path = Config.class.getResource("/").getPath(); //保存在什么路径,这里先暂时赋予一个本项目的路径，避免路径找不到
+				public BaseVO save(String key, String json) {
+					boolean isSuccess = FileUtil.write(path+key, json);
+					if(isSuccess) {
+						return BaseVO.success();
+					}else {
+						return BaseVO.failure("保存失败");
+					}
+				}
+				public BaseVO get(String key) {
+					String text = FileUtil.read(path+key);
+					if(text == null || text.length() < 2) {
+						return BaseVO.failure("未发现自定义存储配置");
+					}else {
+						return BaseVO.success(text);
+					}
+				}
+			});
+		}
+		
 		return Config.configStorageInterface;
 	}
 

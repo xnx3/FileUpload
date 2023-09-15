@@ -105,9 +105,12 @@ fileupload.config = {
 		`,
 		//提交按钮
 		submit:function(){
-			var data = from.getJsonData('from');
-			console.log(JSON.stringify(data, null, 4));
-			alert(data);
+			var postData = from.getJsonData('from');
+			console.log(JSON.stringify(postData, null, 4));
+			//alert(data);
+			request.post('http://192.168.31.193:8088/save.json', postData, function(data){
+				console.log(data);
+			});
 		},
 		//加载
 		load:function(){
