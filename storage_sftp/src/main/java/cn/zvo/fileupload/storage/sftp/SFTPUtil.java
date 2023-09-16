@@ -8,6 +8,7 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import cn.zvo.fileupload.storage.sftp.bean.FileBean;
@@ -58,29 +59,26 @@ public class SFTPUtil {
 	
 	/**
 	 * connect server via sftp
+	 * @throws JSchException 
 	 */
-	public void connect() {
-		try {
-			if(sftp != null){
-				log("connect , sftp is not null");
-			}
-			JSch jsch = new JSch();
-			jsch.getSession(username, host, port);
-			Session sshSession = jsch.getSession(username, host, port);
-			log("connect , Session created.");
-			sshSession.setPassword(password);
-			Properties sshConfig = new Properties();
-			sshConfig.put("StrictHostKeyChecking", "no");
-			sshSession.setConfig(sshConfig);
-			sshSession.connect();
-			log("connect , Session connected,Opening Channel.");
-			Channel channel = sshSession.openChannel("sftp");
-			channel.connect();
-			sftp = (ChannelSftp) channel;
-			log("connect , Connected to " + host);
-		} catch (Exception e) {
-			e.printStackTrace();
+	public void connect() throws JSchException {
+		if(sftp != null){
+			log("connect , sftp is not null");
 		}
+		JSch jsch = new JSch();
+		jsch.getSession(username, host, port);
+		Session sshSession = jsch.getSession(username, host, port);
+		log("connect , Session created.");
+		sshSession.setPassword(password);
+		Properties sshConfig = new Properties();
+		sshConfig.put("StrictHostKeyChecking", "no");
+		sshSession.setConfig(sshConfig);
+		sshSession.connect();
+		log("connect , Session connected,Opening Channel.");
+		Channel channel = sshSession.openChannel("sftp");
+		channel.connect();
+		sftp = (ChannelSftp) channel;
+		log("connect , Connected to " + host);
 	}
 	
 	/**

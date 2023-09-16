@@ -57,11 +57,19 @@ public class SftpStorage implements StorageInterface {
 		}
 	}
 
-	public void openConnectCheck() {
+	public BaseVO openConnectCheck(){
 		if(this.sftpUtil.getSftp() == null || !this.sftpUtil.getSftp().isConnected()) {
 			//链接没打开，那么打开链接
-			this.sftpUtil.connect();
+			
+			try {
+				this.sftpUtil.connect();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return BaseVO.failure(e.getMessage());
+			}
+			
 		}
+		return BaseVO.success();
 	}
 	
 	/**
@@ -75,7 +83,11 @@ public class SftpStorage implements StorageInterface {
 		UploadFileVO vo = new UploadFileVO();
 		
 		//检测打开连接
-		openConnectCheck();
+		BaseVO openVO = openConnectCheck();
+		if(openVO.getResult()-BaseVO.FAILURE == 0) {
+			vo.setBaseVO(openVO);
+			return vo;
+		}
 		
 		PathBean pathBean = getPath(path);
 		
@@ -119,12 +131,16 @@ public class SftpStorage implements StorageInterface {
 		//检测打开连接
 		openConnectCheck();
 		
-		//切换到操作的目录
+		PathBean pathBean = getPath(path);
+		
+		//切换到要上传的目录
 		try {
-			this.sftpUtil.getSftp().cd(sftpPath); //切换到指定上传目录
+			this.sftpUtil.getSftp().cd(this.directory + pathBean.getPath()); //切换到指定上传目录
 		} catch (SftpException e) {
 			e.printStackTrace();
-		} 
+			return BaseVO.failure("异常，很可能是无权操作此目录:"+this.directory + pathBean.getPath()+", 错误:"+e.getCause().toString());
+		}
+		
 		
 		try {
 			this.sftpUtil.getSftp().rm(sftpPath);
