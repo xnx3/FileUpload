@@ -13,7 +13,9 @@ import com.xnx3.Log;
 import com.xnx3.StringUtil;
 import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
+import cn.zvo.fileupload.vo.StorageConfigVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
+import cn.zvo.fileupload.vo.bean.Param;
 
 /**
  * 文件上传之 华为云 OBS 
@@ -179,6 +181,19 @@ public class AliyunOSSStorage implements StorageInterface {
 			return null;
 		}
 		
+	}
+
+	@Override
+	public StorageConfigVO config() {
+		StorageConfigVO vo = new StorageConfigVO();
+		vo.setName("阿里云OSS");
+		vo.setDescription("阿里云对象存储OSS");
+		vo.getParamList().add(new Param("accessKeyId", "Access Key Id", "阿里云的 Access Key Id", true, ""));
+		vo.getParamList().add(new Param("secretAccessKey", "Secret Access Key", "阿里云的Secret Access Key", true, ""));
+		vo.getParamList().add(new Param("endpoint", "endpoint", "OSS服务的Endpoint。如：oss-cn-hongkong.aliyuncs.com", true, ""));
+		vo.getParamList().add(new Param("bucketname", "桶名称", "OSS服务的Bucket桶名称", true, ""));
+		
+		return vo;
 	}
 	
 }
