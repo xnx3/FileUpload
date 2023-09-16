@@ -18,6 +18,7 @@ import cn.zvo.fileupload.config.vo.StorageVO;
 import cn.zvo.fileupload.config.vo.bean.Custom;
 import cn.zvo.fileupload.config.vo.bean.Storage;
 import cn.zvo.fileupload.vo.StorageConfigVO;
+import cn.zvo.fileupload.vo.UploadFileVO;
 import net.sf.json.JSONObject;
 
 /**
@@ -81,11 +82,17 @@ public class Config {
 			vo.setBaseVO(ConfigVO.FAILURE, storageVO.getInfo());
 		}else {
 			//成功
-			JSONObject json = JSONObject.fromObject(storageVO.getInfo());
-			Custom custom = new Custom();
-			custom.setStorage(JSONUtil.getString(json, "storage"));
-			custom.setConfig(json.getJSONObject("config"));
-			vo.setCustom(custom);
+			if(storageVO.getInfo() == null || storageVO.getInfo().equals("")) {
+				//用户第一次用，还没设置
+				vo.setCustom(null);
+			}else {
+				JSONObject json = JSONObject.fromObject(storageVO.getInfo());
+				Custom custom = new Custom();
+				custom.setStorage(JSONUtil.getString(json, "storage"));
+				custom.setConfig(json.getJSONObject("config"));
+				vo.setCustom(custom);
+			}
+			
 		}
 		return vo;
 	}
@@ -182,22 +189,34 @@ public class Config {
 	 * 
 	 */
 	public static BaseVO save(String key, String json){
-		BaseVO vo = new BaseVO();
+//		BaseVO vo = new BaseVO();
+//		
+//		JSONObject jsonObj = JSONObject.fromObject(json);
+//		String storage = jsonObj.getString("storage");
+//		if(storage == null || storage.length() < 1) {
+//			return BaseVO.failure("请设置storage");
+//		}
+//		if(!Config.isExit(storage)) {
+//			return BaseVO.failure("当前系统中并未有此存储："+storage);
+//		}
+//		
+//		if(jsonObj.get("config") == null) {
+//			return BaseVO.failure("请设置 config");
+//		}
 		
-		JSONObject jsonObj = JSONObject.fromObject(json);
-		String storage = jsonObj.getString("storage");
-		if(storage == null || storage.length() < 1) {
-			return BaseVO.failure("请设置storage");
+		//创建上传对象
+		StorageVO storageVO = configToStorageVO(json);
+		if(storageVO.getResult() - StorageVO.FAILURE == 0) {
+			return BaseVO.failure(storageVO.getInfo());
 		}
-		if(!Config.isExit(storage)) {
-			return BaseVO.failure("当前系统中并未有此存储："+storage);
+		//上传一个文件进行测试
+		UploadFileVO uploadFileVO = storageVO.getFileupload().uploadString("fileupload-config-connect-test.txt", "Test UploadFile Config Connect. \n https://gitee.com/mail_osc/FileUpload");
+		if(uploadFileVO.getResult() - UploadFileVO.FAILURE == 0) {
+			return BaseVO.failure(uploadFileVO.getInfo());
 		}
+		//成功后删除这个文件
+		//storageVO.getFileupload().delete("test.txt");
 		
-		if(jsonObj.get("config") == null) {
-			return BaseVO.failure("请设置 config");
-		}
-		
-		//JSONObject config = jsonObj.getJSONObject("config");
 		return configStorageInterface.save(key, json);
 	}
 	
