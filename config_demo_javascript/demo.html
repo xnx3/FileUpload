@@ -1,0 +1,30 @@
+<html>
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+<body>
+
+<div>这里只是简单演示了怎么快速使用，有什么功能。保存接口还需后端配合实现</div>
+<button onclick="set();" style="font-size: 2rem; padding: 1rem; background: cornflowerblue;">点此配置某个唯一标识的存储方式</button>
+
+<!-- 代码开始 -->
+<script src="https://res.zvo.cn/request/request.js"></script> <!-- 原生js实现网络接口请求，不依赖任何三方框架 https://gitee.com/mail_osc/request -->
+<script src="https://res.zvo.cn/msg/msg.js"></script> <!-- 原生的消息提醒 https://gitee.com/mail_osc/msg -->
+<script src="https://res.zvo.cn/from.js/from.js"></script> <!--  -->
+<script src="./fileupload-config.js"></script>
+<script>
+function set(){
+	//采用快速使用的方式，进行简单的接口定义
+	fileupload.config.quick.use({
+		key:"123",	//key便是要获取的哪个唯一标识的存储方式。每个唯一标识都有自己的一套自定义存储方式
+		configUrl:"http://res.zvo.cn/fileupload/config/config.json", //get方式获取fileupload config 的 json配置。这里只是演示，所以这个接口无论传什么key都是返回固定的内容，正常使用时这里配置的是接口的url，如 ：http://xxxxx.com/getConfig.json
+		submitUrl:"http://xxxxx.com/save.json",	//提交保存的url，会进行post提交
+	});
+}
+</script>
+<!-- 代码结束 -->
+
+
+</body>
+</html>

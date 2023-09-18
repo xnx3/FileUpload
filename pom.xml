@@ -6,7 +6,7 @@
 
 	<groupId>cn.zvo.fileupload</groupId>
 	<artifactId>fileupload-parent</artifactId>
-	<version>1.0</version>
+	<version>2.0</version>
 	<packaging>pom</packaging>
 
 	<description>java file upload</description>
@@ -51,9 +51,14 @@
 		
 		<!-- 使用阿里云OSS存储 -->
 		<module>storage_aliyunOSS</module>
+		<!-- 使用SFTP存储 -->
+		<module>storage_sftp</module>
 		
 		<!-- 针对框架：springmvc （可在springboot中使用） -->
 		<module>framework_springboot</module>
+		
+		<!-- config 自定义存储配置能力 -->
+		<module>config</module>
     </modules>
 	
 	

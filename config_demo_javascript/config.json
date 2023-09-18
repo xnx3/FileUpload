@@ -1,0 +1,163 @@
+{
+    "result": 1,
+    "info": "成功",
+    "storageList": [
+        {
+            "id": "cn.zvo.fileupload.storage.sftp.SftpStorage",
+            "name": "SFTP",
+            "description": "将文件存储到指定的SFTP空间中",
+            "paramList": [
+                {
+                    "id": "host",
+                    "name": "主机",
+                    "description": "格式如 127.0.0.1",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "username",
+                    "name": "用户名",
+                    "description": "用户名，如 root",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "password",
+                    "name": "密码",
+                    "description": "登陆密码，如果未设置密码可留空",
+                    "require": false,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "port",
+                    "name": "端口号",
+                    "description": "如 22",
+                    "require": false,
+                    "defaultValue": "22"
+                },
+                {
+                    "id": "directory",
+                    "name": "上传目录",
+                    "description": "操作的目录，比如 /root/  如果不传入，默认是 / 也就是根目录。但要注意该账号要对此目录有读写权限！貌似除了root账号能有根目录权限外，其他别的账号可能操作不了根目录",
+                    "require": false,
+                    "defaultValue": "/"
+                }
+            ]
+        },
+        {
+            "id": "cn.zvo.fileupload.storage.huaweicloudOBS.HuaweicloudOBSStorage",
+            "name": "华为云OBS",
+            "description": "华为云对象存储OBS",
+            "paramList": [
+                {
+                    "id": "accessKeyId",
+                    "name": "Access Key Id",
+                    "description": "华为云的 Access Key Id",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "accessKeySecret",
+                    "name": "Access Key Secret",
+                    "description": "华为云的 Access Key Secret",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "endpoint",
+                    "name": "endpoint",
+                    "description": "传入格式如 \"obs.cn-north-4.myhuaweicloud.com\" ,详细可参考 <a href=\"https://developer.huaweicloud.com/endpoint?OBS\" target=\"_black\">https://developer.huaweicloud.com/endpoint?OBS</a>",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "obsname",
+                    "name": "桶名称",
+                    "description": "所建立的OBS存储桶的名字，需要提前创建好",
+                    "require": true,
+                    "defaultValue": ""
+                }
+            ]
+        },
+        {
+            "id": "cn.zvo.fileupload.storage.aliyunOSS.AliyunOSSStorage",
+            "name": "阿里云OSS",
+            "description": "阿里云对象存储OSS",
+            "paramList": [
+                {
+                    "id": "accessKeyId",
+                    "name": "Access Key Id",
+                    "description": "阿里云的 Access Key Id",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "secretAccessKey",
+                    "name": "Secret Access Key",
+                    "description": "阿里云的Secret Access Key",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "endpoint",
+                    "name": "endpoint",
+                    "description": "OSS服务的Endpoint。如：oss-cn-hongkong.aliyuncs.com",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "bucketname",
+                    "name": "桶名称",
+                    "description": "OSS服务的Bucket桶名称",
+                    "require": true,
+                    "defaultValue": ""
+                }
+            ]
+        },
+        {
+            "id": "cn.zvo.fileupload.storage.qiniuKodo.QiniuKodoStorage",
+            "name": "七牛云Kodo",
+            "description": "七牛云云存储Kodo",
+            "paramList": [
+                {
+                    "id": "accessKey",
+                    "name": "AccessKey",
+                    "description": "七牛云的 AccessKey, 获取方式可通过网址获取 https://portal.qiniu.com/user/key",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "secretKey",
+                    "name": "SecretKey",
+                    "description": "七牛云的 SecretKey, 获取方式可通过网址获取 https://portal.qiniu.com/user/key",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "bucketName",
+                    "name": "存储空间名称",
+                    "description": "七牛云存储空间的名称",
+                    "require": true,
+                    "defaultValue": ""
+                },
+                {
+                    "id": "domain",
+                    "name": "自定义域名",
+                    "description": "桶绑定的自定义域名，格式如 http://123.zvo.cn 设置时要注意格式 没域名可暂用测试域名来测试",
+                    "require": true,
+                    "defaultValue": ""
+                }
+            ]
+        }
+    ],
+    "custom": {
+        "storage": "cn.zvo.fileupload.storage.huaweicloudOBS.HuaweicloudOBSStorage",
+        "config": {
+            "key": "8",
+            "accessKeyId": "H0TPUBC6YDZWxxxxxxxx",
+            "accessKeySecret": "je56lHbJ62xxxxxxxxxx9InmPAtVY9ut5ZqaI29O",
+            "endpoint": "obs.cn-north-4.myhuaweicloud.com",
+            "obsname": "test"
+        }
+    }
+}
