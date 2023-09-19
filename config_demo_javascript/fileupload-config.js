@@ -79,25 +79,24 @@ fileupload.config = {
 		//显示出来的html页面内容
 		html: `
 			<style>
-				#storage_from{padding: 10px 0 5px 0;box-sizing: border-box; overflow: hidden;}
+				#storage_from{padding: 5px 0 5px 0;box-sizing: border-box; overflow: hidden;transform: translateX(7px)}
 				/* select选择框 */
-				.storageSelectDiv{margin-bottom:12px}
 				/* input输入框前面的文字 */
-				.storage_label{ width:5rem; display: inline-block;font-size:14px;text-align: right;padding-right: 10px;box-sizing: border-box; }
+				.storage_label{ width:80%; display: block;font-size:15px;text-align: left;padding-right: 10px;box-sizing: border-box;    margin-bottom: 0.2rem; }
 				/* input输入框所在的div */
 				#storage_param .storage_param_input_div{  padding-top: 8px; }
 				/* input输入框 */
-				#storage_param .storage_param_input_div input,#storageSelect {width: calc(100% - 7rem);height: 25px;box-sizing: border-box;outline: 0;border: 2px solid #ebebeb;font-size: 14px;line-height: 25px;border-radius:3px;margin-bottom:3px }
+				#storage_param .storage_param_input_div input,#storageSelect {width: calc(100% - 14px);height: 28px;box-sizing: border-box;outline: 0;border: 2px solid #ebebeb;font-size: 14px;line-height: 25px;border-radius:3px;margin-bottom:3px }
 				/* input是否必填 - 非必填 */
 				#storage_param div .storage_param_false{ display:none; }
 				/* input输入框下面跟随的填写说明 */
-				#storage_param .storage_param_info,  #storage_select_description{ margin-left: 85px;color: #9e9e9e;font-size: 12px;width: calc(100% - 7rem);line-height:1rem}
+				#storage_param .storage_param_info,  #storage_select_description{ color: #888888;font-size: 12px;width: 100%;line-height:1rem;padding-right: 14px;box-sizing: border-box;}
 				/* input是否必填 - 必填 */
 				.storage_param_true{ color:red; }
 				/* 提交按钮所在的div */
-				.storage_submit_div{ margin-top:0.8rem; text-align: center; padding-right: 2rem;margin-left: 5rem;}
+				.storage_submit_div{ margin-top:0.8rem; text-align: center; width:100%}
 				/* 提交按钮 */
-				.storage_submit_div button{ padding: 2px 15px;cursor: pointer;width: 60%;}
+				.storage_submit_div button{ padding: 3px 15px;cursor: pointer;width: 40%;}
 				/* 如果出现超链接，超链接的样式 */
 				#storage_from a { color:gray; text-decoration: revert; }
 			</style>
@@ -151,7 +150,7 @@ fileupload.config = {
 				
 				msg.popups({
 					text:fileupload.config.quick.html,
-					width: '360px',
+					width: '350px',
 					top:'16%'
 				});
 				fileupload.config.initConfigData(fileupload.config.quick.key, data);
