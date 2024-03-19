@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.net.ftp.FTPFile;
+
 import com.xnx3.BaseVO;
 import com.xnx3.Lang;
 import com.xnx3.Log;
@@ -43,7 +46,7 @@ public class FtpStorage implements StorageInterface {
 		String port = map.get("port");
 		this.directory = map.get("directory");
 		if(this.directory == null || this.directory.length() == 0 || this.directory.equalsIgnoreCase("null")) {
-			Log.info("提示 directory参数未设置，这也是SFTP的默认目录，比如root账号，默认操作的目录是在 /root/  严格注意格式，前后有 /");
+			Log.info("提示 directory参数未设置，这也是FTP的默认目录，比如root账号，默认操作的目录是在 /root/  严格注意格式，前后有 /");
 			this.directory = "/";
 		}
 		
@@ -97,8 +100,45 @@ public class FtpStorage implements StorageInterface {
 			try {
 				String serverAbsPath = this.ftpUtil.ftpClient.printWorkingDirectory()+ftpPath;
 				serverAbsPath = serverAbsPath.replaceAll("//", "/");	//去掉 //
+				
+				// 使用 listDirectories 方法获取目录列表
+				FTPFile[] ftpFiles = this.ftpUtil.ftpClient.listDirectories(serverAbsPath);
+
+	            // 如果目录列表不为空，说明文件夹存在
+	            if (ftpFiles != null && ftpFiles.length > 0) {
+	               //文件夹存在
+	            }else {
+	            	//不存在，创建文件夹
+	            	
+	            	String[] directoryNames = serverAbsPath.split("/");
+	            	String currentPath = "/";
+	                for (String directoryName : directoryNames) {
+	                	if(directoryName.length() < 1) {
+	                		continue;
+	                	}
+	                	currentPath = currentPath + directoryName+"/";
+	                	//判断目录如果不存在，则创建，存在，则进入
+	                    if (!this.ftpUtil.ftpClient.changeWorkingDirectory(currentPath)) {
+//	                    	this.ftpUtil.ftpClient.makeDirectory(directoryName);
+	                    	if (!this.ftpUtil.ftpClient.makeDirectory(currentPath)) {
+	    		                //System.out.println("FTP 文件夹创建失败 ： "+serverAbsPath);
+	    		                vo.setBaseVO(BaseVO.FAILURE, "FTP 文件夹创建失败 ： "+currentPath);
+	    						return vo;
+	    					}
+	                    }
+	                }
+	                
+					if (!this.ftpUtil.ftpClient.changeWorkingDirectory(serverAbsPath)) {
+		                //System.out.println("FTP 文件夹创建失败 ： "+serverAbsPath);
+		                vo.setBaseVO(BaseVO.FAILURE, "FTP 文件夹进入失败 ： "+serverAbsPath);
+						return vo;
+					}
+	            }
+				
 				if (!this.ftpUtil.ftpClient.changeWorkingDirectory(serverAbsPath)) {
 					Log.debug("FTP目录 "+ftpPath+" 进入返回false。可能是服务器权限有什么限定，多数情况下不影响文件上传。当然最终还要看文件是否传上去了。服务器中实际目录："+serverAbsPath);
+					vo.setBaseVO(BaseVO.FAILURE, "FTP目录 "+ftpPath+" 进入返回false。可能是服务器权限有什么限定，多数情况下不影响文件上传。当然最终还要看文件是否传上去了。服务器中实际目录："+serverAbsPath);
+					return vo;
 				} else {
 					Log.debug("进入FTP目录："+ftpPath+", 服务器中实际目录："+serverAbsPath);
 				}

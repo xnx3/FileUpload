@@ -16,9 +16,10 @@ public class Demo {
 		
 		/**** 定义存储位置，存储到SFTP中 ****/
 		Map<String, String> config = new HashMap<String, String>();
-		config.put("host", "192.168.31.241");
-		config.put("username", "root");
-		config.put("password", "leimingyun");
+		config.put("host", "23.224.89.104");
+		config.put("username", "cc_8jkw_com");
+		config.put("password", "。。。。");
+		config.put("port", "55");
 		FtpStorage storage = new FtpStorage(config);
 		
 		/**** 创建文件上传工具对象 ****/
@@ -29,7 +30,7 @@ public class Demo {
 //		fileUpload.setDomain("http://cdn.yourdomain.com/");  //还可设置OSS绑定的域名或CDN加速域名
 
 		/**** 上传，这里上传一个文本文件，内容是 123456 ，将他保存到 桶 abc 目录下的 1.txt 文件 ****/
-		UploadFileVO vo = fileUpload.uploadString("test.html", "123456");
+		UploadFileVO vo = fileUpload.uploadString("t/e/s/t.html", "123456");
 		System.out.println(vo);	//打印结果
 	}
 	
