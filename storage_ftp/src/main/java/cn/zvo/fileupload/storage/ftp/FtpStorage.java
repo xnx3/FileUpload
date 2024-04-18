@@ -91,14 +91,20 @@ public class FtpStorage implements StorageInterface {
 		}
 		
 		PathBean pathBean = getPath(path);
-		
+		try {
+			Log.info("this.directory:"+this.directory+", pathBean.getPath():"+pathBean.getPath()+", this.ftpUtil.currentPath:"+this.ftpUtil.currentPath+", this.ftpUtil.ftpClient.printWorkingDirectory()："+this.ftpUtil.ftpClient.printWorkingDirectory());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 //		boolean b = this.ftpUtil.upload(this.directory + pathBean.getPath(), inputStream, pathBean.getFileName());
 		
 		String ftpPath = this.directory + pathBean.getPath();	//ftp中要操作的目录
 		if(!this.ftpUtil.currentPath.equals(ftpPath)) {
 			//跟上次不在一个目录下，要先进入这个目录
 			try {
-				String serverAbsPath = this.ftpUtil.ftpClient.printWorkingDirectory()+ftpPath;
+				//这个会出现目录重复问题
+				//String serverAbsPath = this.ftpUtil.ftpClient.printWorkingDirectory()+ftpPath;
+				String serverAbsPath = ftpPath;
 				serverAbsPath = serverAbsPath.replaceAll("//", "/");	//去掉 //
 				
 				// 使用 listDirectories 方法获取目录列表
