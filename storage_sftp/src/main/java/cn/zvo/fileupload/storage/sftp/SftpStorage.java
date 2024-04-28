@@ -1,5 +1,6 @@
 package cn.zvo.fileupload.storage.sftp;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +8,15 @@ import java.util.Map;
 
 import com.jcraft.jsch.SftpException;
 import com.xnx3.BaseVO;
+import com.xnx3.FileUtil;
 import com.xnx3.Lang;
 import com.xnx3.Log;
+import com.xnx3.StringUtil;
 import com.xnx3.UrlUtil;
 
 import cn.zvo.fileupload.StorageInterface;
 import cn.zvo.fileupload.bean.SubFileBean;
+import cn.zvo.fileupload.storage.local.LocalStorage;
 import cn.zvo.fileupload.storage.sftp.bean.PathBean;
 import cn.zvo.fileupload.vo.StorageConfigVO;
 import cn.zvo.fileupload.vo.UploadFileVO;
@@ -90,6 +94,8 @@ public class SftpStorage implements StorageInterface {
 		}
 		
 		PathBean pathBean = getPath(path);
+		
+		createFolder(path);
 		
 		//切换到要上传的目录
 		try {
@@ -214,9 +220,69 @@ public class SftpStorage implements StorageInterface {
 
 	@Override
 	public BaseVO createFolder(String path) {
+		if(path == null){
+			return BaseVO.success();
+		}
+		
+		//windows取的路径是\，所以要将\替换为/
+		if(path.indexOf("\\") > 1){
+			path = StringUtil.replaceAll(path, "\\\\", "/");
+		}
+		
+		if(path.length() - path.lastIndexOf("/") > 1){
+			//path最后是带了具体文件名的，把具体文件名过滤掉，只留文件/结尾
+			path = path.substring(0, path.lastIndexOf("/")+1);
+		}
+		
+
+		//如果目录或文件不存在，再进行创建目录的判断
+		if(folderExists(path) == 2){
+			String[] ps = path.split("/");
+			
+			String xiangdui = "";
+			//length-1，/最后面应该就是文件名了，所以要忽略最后一个
+			for (int i = 0; i < ps.length; i++) {
+				if(ps[i].length() > 0){
+					xiangdui = xiangdui + ps[i]+"/";
+					String currentPath = this.directory+xiangdui;
+					if(folderExists(currentPath) == 2){
+//					if(!FileUtil.exists(this.getLocalFilePath()+xiangdui)){
+//						File file = new File(this.getLocalFilePath()+xiangdui);
+//						file.mkdir();
+						try {
+							this.sftpUtil.getSftp().mkdir(currentPath);
+						} catch (SftpException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		
 		
 		return BaseVO.success();
 	}
+	
+	/**
+	 * 判断某个目录，文件夹是否存在
+	 * @param path 传入如  /root/1/2/3/
+	 * @return 1存在， 2不存在， 3其他情况，出错的情况
+	 */
+	public int folderExists(String path) {
+		try {
+			this.sftpUtil.getSftp().stat(path);
+			return 1;
+		} catch (SftpException e) {
+			if(e.getMessage().equalsIgnoreCase("No such file")) {
+				return 2;
+			}else {
+				e.printStackTrace();
+				return 3;
+			}
+		}
+	}
+
+	
 
 	@Override
 	public InputStream get(String path) {
