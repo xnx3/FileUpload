@@ -63,7 +63,7 @@ public class FtpStorage implements StorageInterface {
 				//打开成功
 				return BaseVO.success();
 			}else {
-				//Log.debug("FTP未能打开链接。当前第"+num+"次尝试");
+//				Log.debug("FTP未能打开链接。当前第"+num+"次尝试");
 			}
 		}
 		if(!this.ftpUtil.ftpClient.isConnected()) {
@@ -91,11 +91,11 @@ public class FtpStorage implements StorageInterface {
 		}
 		
 		PathBean pathBean = getPath(path);
-		try {
-			Log.info("this.directory:"+this.directory+", pathBean.getPath():"+pathBean.getPath()+", this.ftpUtil.currentPath:"+this.ftpUtil.currentPath+", this.ftpUtil.ftpClient.printWorkingDirectory()："+this.ftpUtil.ftpClient.printWorkingDirectory());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			Log.info("this.directory:"+this.directory+", pathBean.getPath():"+pathBean.getPath()+", this.ftpUtil.currentPath:"+this.ftpUtil.currentPath+", this.ftpUtil.ftpClient.printWorkingDirectory()："+this.ftpUtil.ftpClient.printWorkingDirectory());
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 //		boolean b = this.ftpUtil.upload(this.directory + pathBean.getPath(), inputStream, pathBean.getFileName());
 		
 		String ftpPath = this.directory + pathBean.getPath();	//ftp中要操作的目录

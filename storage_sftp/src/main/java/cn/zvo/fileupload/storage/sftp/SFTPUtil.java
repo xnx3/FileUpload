@@ -46,7 +46,7 @@ public class SFTPUtil {
 	private String password="管雷鸣";
 	private int port = 22;
 	private ChannelSftp sftp = null;
-	public static boolean log = false;
+	public static boolean log = true; //是否显示日志， true显示
 	
 	
 	public SFTPUtil() {
@@ -54,7 +54,9 @@ public class SFTPUtil {
 	}
 	
 	public static void log(String str) {
-		System.out.println(str);
+		if(log) {
+			System.out.println(str);
+		}
 	}
 	
 	/**
