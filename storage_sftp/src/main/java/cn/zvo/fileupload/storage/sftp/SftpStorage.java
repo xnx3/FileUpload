@@ -282,11 +282,14 @@ public class SftpStorage implements StorageInterface {
 		}
 	}
 
-	
-
 	@Override
 	public InputStream get(String path) {
-		return null;
+		try {
+			return this.sftpUtil.getSftp().get(this.directory+path);
+		} catch (SftpException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
