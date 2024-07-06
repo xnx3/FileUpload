@@ -284,12 +284,22 @@ public class SftpStorage implements StorageInterface {
 
 	@Override
 	public InputStream get(String path) {
+		//检测打开连接
+		BaseVO openVO = openConnectCheck();
+		if(openVO.getResult()-BaseVO.FAILURE == 0) {
+			Log.error("open check failure : "+openVO.getInfo());
+			return null;
+		}
+		
 		try {
-			return this.sftpUtil.getSftp().get(this.directory+path);
+			InputStream is = this.sftpUtil.getSftp().get(this.directory+path);
+			return is;
 		} catch (SftpException e) {
 			e.printStackTrace();
 			return null;
 		}
+		
+		
 	}
 	
 	/**
