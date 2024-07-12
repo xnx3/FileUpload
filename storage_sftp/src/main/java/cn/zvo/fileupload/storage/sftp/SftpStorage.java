@@ -269,6 +269,10 @@ public class SftpStorage implements StorageInterface {
 	 * @return 1存在， 2不存在， 3其他情况，出错的情况
 	 */
 	public int folderExists(String path) {
+		if(path.length() == 0) {
+			//这里判断的可能是根目录，那也就不用判断了，直接成功就行了
+			return 1;
+		}
 		try {
 			this.sftpUtil.getSftp().stat(path);
 			return 1;
