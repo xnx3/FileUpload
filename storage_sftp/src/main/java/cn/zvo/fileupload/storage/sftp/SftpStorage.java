@@ -29,6 +29,11 @@ import cn.zvo.fileupload.vo.bean.Param;
  */
 public class SftpStorage implements StorageInterface {
 	public SFTPUtil sftpUtil;
+	
+	public String host;
+	public String username;
+	public String password;
+	public int port = 22;
 	public String directory;	//SFTP的默认目录，比如root账号，默认操作的目录是在 /root/  严格注意格式，前后有 /
 	
 	/**
@@ -42,11 +47,11 @@ public class SftpStorage implements StorageInterface {
 	 *  </ul>
 	 */
 	public SftpStorage(Map<String, String> map) {
-		String host = map.get("host");
-		String username = map.get("username");
-		String password = map.get("password");
-		String port = map.get("port");
-		this.directory = map.get("directory");
+		host = map.get("host");
+		username = map.get("username");
+		password = map.get("password");
+		String portStr = map.get("port");
+		directory = map.get("directory");
 		if(this.directory == null || this.directory.length() == 0 || this.directory.equalsIgnoreCase("null")) {
 			Log.info("提示 directory参数未设置，这也是SFTP的默认目录，比如root账号，默认操作的目录是在 /root/  严格注意格式，前后有 /");
 			this.directory = "/";
@@ -56,8 +61,9 @@ public class SftpStorage implements StorageInterface {
 		this.sftpUtil.setHost(host);
 		this.sftpUtil.setUsername(username);
 		this.sftpUtil.setPassword(password);
-		if(port != null && port.length() > 0) {
-			this.sftpUtil.setPort(Lang.stringToInt(port, 22));
+		if(portStr != null && portStr.length() > 0) {
+			port = Lang.stringToInt(portStr, 22);
+			this.sftpUtil.setPort(port);
 		}
 	}
 
@@ -135,7 +141,11 @@ public class SftpStorage implements StorageInterface {
 		String sftpPath = UrlUtil.getPath(path);
 		
 		//检测打开连接
-		openConnectCheck();
+		//检测打开连接
+		BaseVO openVO = openConnectCheck();
+		if(openVO.getResult()-BaseVO.FAILURE == 0) {
+			return BaseVO.failure(openVO.getInfo());
+		}
 		
 		PathBean pathBean = getPath(path);
 		
@@ -337,4 +347,45 @@ public class SftpStorage implements StorageInterface {
 		
 		return vo;
 	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public String getDirectory() {
+		return directory;
+	}
+
+	public void setDirectory(String directory) {
+		this.directory = directory;
+	}
+	
 }
