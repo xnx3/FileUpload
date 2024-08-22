@@ -109,7 +109,7 @@ public class SftpStorage implements StorageInterface {
 		} catch (SftpException e) {
 			e.printStackTrace();
 			vo.setResult(UploadFileVO.FAILURE);
-			vo.setInfo("异常，很可能是无权操作此目录:"+pathBean.getPath()+", 错误:"+e.getCause().toString());
+			vo.setInfo("异常，很可能是无权操作此目录:"+this.directory+(pathBean != null ? pathBean.getPath():" pathBean is null")+", 错误:"+(e.getCause() != null? e.getCause().toString():"e.getCause() is null"));
 			return vo;
 		}
 		
