@@ -99,7 +99,8 @@ public class LocalStorage implements StorageInterface{
 	@Override
 	public BaseVO delete(String path) {
 		try {
-			FileUtil.deleteFile(this.getLocalFilePath()+path);
+			FileUtil.delete(this.getLocalFilePath()+path);
+//			FileUtil.deleteFile(this.getLocalFilePath()+path);
 			return BaseVO.success();
 		} catch (Exception e) {
 			e.printStackTrace();
