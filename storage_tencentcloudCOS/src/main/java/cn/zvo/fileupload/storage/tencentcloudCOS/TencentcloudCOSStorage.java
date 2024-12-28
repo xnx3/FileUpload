@@ -82,8 +82,10 @@ public class TencentcloudCOSStorage implements StorageInterface {
     public UploadFileVO upload(String path, InputStream inputStream) {
     //	PutResult result = getOss().put(path, inputStream);
         ObjectMetadata metadata = new ObjectMetadata();
-        PutObjectRequest result = new PutObjectRequest(getCOS().bucketName, path, inputStream, metadata);
-        Log.info(result.toString());
+		// 调用存储服务的上传方法
+		PutObjectResult putResult = getCOS().getCOSClient().putObject(new PutObjectRequest(getCOS().bucketName, path, inputStream, metadata));
+
+        Log.info(putResult.toString());
 
         //取文件名
         String fileName = StringUtil.subString(path, "/", null, 3);
