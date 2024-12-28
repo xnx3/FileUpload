@@ -33,7 +33,7 @@ UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-no
     <artifactId>fileupload-core</artifactId>
     <version>1.2</version>
 </dependency>
-<!-- 加入阿里云OSS存储相关实现 -->
+<!-- 加入腾讯云COS存储相关实现 -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-storage-tencentcloudCOS</artifactId>
@@ -77,7 +77,7 @@ System.out.println(vo);	//打印结果
     <<artifactId>fileupload-core</artifactId>
     <version>1.2</version>
 </dependency>
-<!-- 加入阿里云OSS存储相关实现 -->
+<!-- 加入腾讯云COS存储相关实现 -->
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-storage-tencentcloudCOS</artifactId>
@@ -107,7 +107,7 @@ fileupload.domain=http://res.zvo.cn/
 #
 # 设置当前使用的是哪种存储方式
 # 如果此不设置，默认使用的是本地存储的方式。如果设置了，pom.xml 文件中，记得将此存储方式引入进来，不然会报错找不到这个class文件
-# 下面便是具体针对阿里云oss这种存储方式的配置了
+# 下面便是具体针对腾讯云COS这种存储方式的配置了
 # 腾讯云的 Secret Id
 fileupload.storage.tencentcloudCOS.secretId=AKIDUpvlLfjX4LN9YkgMlwrWv4xZv1qxxxxxx
 # 腾讯云的 Secret Key
