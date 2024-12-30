@@ -81,16 +81,25 @@ public class AliyunOSSStorage implements StorageInterface {
 	 */
 	@Override
 	public UploadFileVO upload(String path, InputStream inputStream) {
-//		PutResult result = getOss().put(path, inputStream);
-		PutObjectResult result = getOss().getOSSClient().putObject(getOss().bucketName, path, inputStream);
-		Log.info(result.toString());
-		
-		//取文件名
-		String fileName = StringUtil.subString(path, "/", null, 3);
-		
 		UploadFileVO vo = new UploadFileVO();
-		vo.setName(fileName);
-		vo.setPath(path);
+		try {
+			// 调用上传方法
+			PutObjectResult result = getOss().getOSSClient().putObject(getOss().bucketName, path, inputStream);
+			Log.info(result.toString());
+
+			// 检查上传是否成功
+			if (result != null && result.getETag() != null) {
+				String fileName = StringUtil.subString(path, "/", null, 3);
+				vo.setName(fileName);
+				vo.setPath(path);
+			} else {
+				vo.setBaseVO(BaseVO.FAILURE,"上传文件失败");
+				return vo;
+			}
+		} catch (Exception e) {
+			vo.setBaseVO(BaseVO.FAILURE,"上传文件失败");
+			return vo;
+		}
 		return vo;
 	}
 
@@ -101,8 +110,13 @@ public class AliyunOSSStorage implements StorageInterface {
 	 */
 	@Override
 	public BaseVO delete(String path) {
-		getOss().deleteObject(path);
-		return BaseVO.success();
+		try {
+			// 调用删除方法
+			getOss().getOSSClient().deleteObject(getOss().bucketName, path);
+			return BaseVO.success();  // 成功
+		} catch (Exception e) {
+			return BaseVO.failure("文件删除失败");
+		}
 	}
 	
 	/**
@@ -167,8 +181,12 @@ public class AliyunOSSStorage implements StorageInterface {
 
 	@Override
 	public BaseVO createFolder(String path) {
-		getOss().createFolder(path);
-		return BaseVO.success();
+		try {
+			getOss().createFolder(path);
+			return BaseVO.success();  // 成功
+		} catch (Exception e) {
+			return BaseVO.failure("文件夹创建失败");
+		}
 	}
 
 	@Override
