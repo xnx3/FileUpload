@@ -78,23 +78,32 @@ public class TencentcloudCOSStorage implements StorageInterface {
      * @param inputStream 需要上传文件的输入流
      * @return {@link UploadFileVO} result 1: 成功；0 失败。
      */
-    @Override
-    public UploadFileVO upload(String path, InputStream inputStream) {
-    //	PutResult result = getOss().put(path, inputStream);
-        ObjectMetadata metadata = new ObjectMetadata();
-		// 调用存储服务的上传方法
-		PutObjectResult putResult = getCOS().getCOSClient().putObject(new PutObjectRequest(getCOS().bucketName, path, inputStream, metadata));
+	@Override
+	public UploadFileVO upload(String path, InputStream inputStream) {
+		ObjectMetadata metadata = new ObjectMetadata();
+		UploadFileVO vo = new UploadFileVO();
 
-        Log.info(putResult.toString());
+		try {
+			// 调用存储服务的上传方法
+			PutObjectResult putResult = getCOS().getCOSClient().putObject(new PutObjectRequest(getCOS().bucketName, path, inputStream, metadata));
+			Log.info(putResult.toString());
 
-        //取文件名
-        String fileName = StringUtil.subString(path, "/", null, 3);
+			// 判断上传是否成功
+			if (putResult != null && putResult.getETag() != null) {
+				String fileName = StringUtil.subString(path, "/", null, 3);
+				vo.setName(fileName);
+				vo.setPath(path);
+			} else {
+				vo.setBaseVO(BaseVO.FAILURE, "文件上传失败");
+				return vo;
+			}
+		} catch (Exception e) {
+			vo.setBaseVO(BaseVO.FAILURE, "文件上传失败");
+			return vo;
+		}
+		return vo;
+	}
 
-        UploadFileVO vo = new UploadFileVO();
-        vo.setName(fileName);
-        vo.setPath(path);
-        return vo;
-    }
 
 	/**
 	 * 删除文件
@@ -103,8 +112,12 @@ public class TencentcloudCOSStorage implements StorageInterface {
 	 */
 	@Override
 	public BaseVO delete(String path) {
-		getCOS().deleteObject(path);
-		return BaseVO.success();
+		try {
+			getCOS().deleteObject(path);
+			return BaseVO.success();
+		} catch (Exception e) {
+			return BaseVO.failure("文件删除失败");
+		}
 	}
 
 	/**
@@ -169,8 +182,12 @@ public class TencentcloudCOSStorage implements StorageInterface {
 
 	@Override
 	public BaseVO createFolder(String path) {
-		getCOS().createFolder(path);
-		return BaseVO.success();
+		try {
+			getCOS().createFolder(path);
+			return BaseVO.success();
+		} catch (Exception e) {
+			return BaseVO.failure(" 创建文件夹失败");
+		}
 	}
 
 	@Override
