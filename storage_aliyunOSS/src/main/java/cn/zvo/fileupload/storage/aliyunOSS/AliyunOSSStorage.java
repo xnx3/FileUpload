@@ -97,6 +97,7 @@ public class AliyunOSSStorage implements StorageInterface {
 				return vo;
 			}
 		} catch (Exception e) {
+			Log.info("文件上传失败，错误提示为: " + e.getMessage());
 			vo.setBaseVO(BaseVO.FAILURE,"上传文件失败");
 			return vo;
 		}
@@ -115,6 +116,7 @@ public class AliyunOSSStorage implements StorageInterface {
 			getOss().getOSSClient().deleteObject(getOss().bucketName, path);
 			return BaseVO.success();  // 成功
 		} catch (Exception e) {
+			Log.info("文件删除失败，错误提示为: " + e.getMessage());
 			return BaseVO.failure("文件删除失败");
 		}
 	}
@@ -185,6 +187,7 @@ public class AliyunOSSStorage implements StorageInterface {
 			getOss().createFolder(path);
 			return BaseVO.success();  // 成功
 		} catch (Exception e) {
+			Log.info("文件夹创建失败，错误提示为: " + e.getMessage());
 			return BaseVO.failure("文件夹创建失败");
 		}
 	}

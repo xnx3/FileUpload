@@ -72,17 +72,16 @@ public class TencentcloudCOSStorage implements StorageInterface {
 		return COS;
 	}
 
-    /**
-     * 通过流进行上传文件
-     * @param path 上传文件路径和名称 例："site/1.txt"
-     * @param inputStream 需要上传文件的输入流
-     * @return {@link UploadFileVO} result 1: 成功；0 失败。
-     */
+	/**
+	 * 通过流进行上传文件
+	 * @param path 上传文件路径和名称 例："site/1.txt"
+	 * @param inputStream 需要上传文件的输入流
+	 * @return {@link UploadFileVO} result 1: 成功；0 失败。
+	 */
 	@Override
 	public UploadFileVO upload(String path, InputStream inputStream) {
 		ObjectMetadata metadata = new ObjectMetadata();
 		UploadFileVO vo = new UploadFileVO();
-
 		try {
 			// 调用存储服务的上传方法
 			PutObjectResult putResult = getCOS().getCOSClient().putObject(new PutObjectRequest(getCOS().bucketName, path, inputStream, metadata));
@@ -98,6 +97,7 @@ public class TencentcloudCOSStorage implements StorageInterface {
 				return vo;
 			}
 		} catch (Exception e) {
+			Log.info("文件上传失败，错误提示为: " + e.getMessage());
 			vo.setBaseVO(BaseVO.FAILURE, "文件上传失败");
 			return vo;
 		}
@@ -116,6 +116,7 @@ public class TencentcloudCOSStorage implements StorageInterface {
 			getCOS().deleteObject(path);
 			return BaseVO.success();
 		} catch (Exception e) {
+			Log.info("文件删除失败，错误提示为: " + e.getMessage());
 			return BaseVO.failure("文件删除失败");
 		}
 	}
@@ -139,9 +140,9 @@ public class TencentcloudCOSStorage implements StorageInterface {
 			return list;
 		}
 
-        List<COSObjectSummary> resultList = getCOS().getFolderObjectList(path);
-        for (int i = 0; i < resultList.size(); i++) {
-            COSObjectSummary item = resultList.get(i);
+		List<COSObjectSummary> resultList = getCOS().getFolderObjectList(path);
+		for (int i = 0; i < resultList.size(); i++) {
+			COSObjectSummary item = resultList.get(i);
 
 			SubFileBean bean = new SubFileBean();
 			bean.setPath(item.getKey());
@@ -166,8 +167,8 @@ public class TencentcloudCOSStorage implements StorageInterface {
 			return getCOS().getFolderSize(path);
 		}else {
 			//是文件
-            COSObject ossObject = getCOS().getCOSClient().getObject(getCOS().bucketName, path);
-            if(ossObject == null || ossObject.getObjectContent() == null) {
+			COSObject ossObject = getCOS().getCOSClient().getObject(getCOS().bucketName, path);
+			if(ossObject == null || ossObject.getObjectContent() == null) {
 				return -1;
 			}
 
@@ -186,15 +187,16 @@ public class TencentcloudCOSStorage implements StorageInterface {
 			getCOS().createFolder(path);
 			return BaseVO.success();
 		} catch (Exception e) {
-			return BaseVO.failure(" 创建文件夹失败");
+			Log.info("创建文件夹失败，错误提示为: " + e.getMessage());
+			return BaseVO.failure("创建文件夹失败");
 		}
 	}
 
 	@Override
 	public InputStream get(String path) {
 		try {
-            COSObject ossObject = getCOS().getCOSClient().getObject(getCOS().bucketName, path);
-            return ossObject.getObjectContent();
+			COSObject ossObject = getCOS().getCOSClient().getObject(getCOS().bucketName, path);
+			return ossObject.getObjectContent();
 		}catch (Exception e) {
 			e.printStackTrace();
 			return null;
