@@ -37,7 +37,7 @@ UploadFileVO [fileName=1.txt, path=abc/1.txt, url=https://cha-template.obs.cn-no
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-storage-tencentcloudCOS</artifactId>
-    <version>2.1</version>
+    <version>2.0</version>
 </dependency>
 <!-- 如果你在springboot使用，可引入 framework.springboot 模块，快速再springboot中使用 -->
 ````
@@ -81,7 +81,7 @@ System.out.println(vo);	//打印结果
 <dependency> 
     <groupId>cn.zvo.fileupload</groupId>
     <artifactId>fileupload-storage-tencentcloudCOS</artifactId>
-    <version>2.1</version>
+    <version>2.0</version>
 </dependency>
 <!-- 在 SpringBoot 框架中的快速使用。 （在不同的框架中使用，这里引入的framework.xxx也不同） -->
 <dependency> 
